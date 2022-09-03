@@ -5,7 +5,7 @@ using Xunit;
 using Xunit.Sdk;
 
 /// <summary>
-/// The static class containing overloads with a message for all <see cref="Assert"/> methods.
+///     The static class containing overloads with a message for all <see cref="Assert" /> methods.
 /// </summary>
 public static partial class AssertM
 {
@@ -31,9 +31,21 @@ public static partial class AssertM
 		{
 			action.Invoke();
 		}
-		catch (XunitException xunitException)
+		catch (XunitException xException)
 		{
-			throw new XunitException(message ?? xunitException.Message, xunitException.InnerException);
+			throw new XunitException(message ?? xException.Message, xException.InnerException);
+		}
+	}
+
+	private static async Task WithMessageAsync(string? message, Func<Task> action)
+	{
+		try
+		{
+			await action.Invoke();
+		}
+		catch (XunitException xException)
+		{
+			throw new XunitException(message ?? xException.Message, xException.InnerException);
 		}
 	}
 
@@ -43,9 +55,21 @@ public static partial class AssertM
 		{
 			return action.Invoke();
 		}
-		catch (XunitException xunitException)
+		catch (XunitException xException)
 		{
-			throw new XunitException(message ?? xunitException.Message, xunitException.InnerException);
+			throw new XunitException(message ?? xException.Message, xException.InnerException);
+		}
+	}
+
+	private static async Task<T> WithMessageAsync<T>(string? message, Func<Task<T>> action)
+	{
+		try
+		{
+			return await action.Invoke();
+		}
+		catch (XunitException xException)
+		{
+			throw new XunitException(message ?? xException.Message, xException.InnerException);
 		}
 	}
 }

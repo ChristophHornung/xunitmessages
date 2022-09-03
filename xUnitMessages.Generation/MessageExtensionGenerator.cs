@@ -141,7 +141,8 @@ public static partial class AssertM
 
 		methodSignatureBuilder.Append(")");
 
-		if (member.TypeParameters.Any(t => t.ConstraintTypes.Any()))
+		if (member.TypeParameters.Any(t => t.ConstraintTypes.Any()) ||
+		    member.TypeParameters.Any(t => t.HasNotNullConstraint))
 		{
 			methodSignatureBuilder.Append(" where ");
 		}
@@ -149,7 +150,7 @@ public static partial class AssertM
 
 		foreach (ITypeParameterSymbol? typeParameter in member.TypeParameters)
 		{
-			if (typeParameter.ConstraintTypes.Any())
+			if (typeParameter.ConstraintTypes.Any() || typeParameter.HasNotNullConstraint)
 			{
 				first = true;
 				methodSignatureBuilder.Append(typeParameter.ToDisplayString());
@@ -167,6 +168,20 @@ public static partial class AssertM
 
 					methodSignatureBuilder.Append(constraint.ToDisplayString());
 				}
+
+				if (typeParameter.HasNotNullConstraint)
+				{
+					if (first)
+					{
+						first = false;
+					}
+					else
+					{
+						methodSignatureBuilder.Append(", ");
+					}
+
+					methodSignatureBuilder.Append("notnull");
+				}
 			}
 		}
 
@@ -178,11 +193,14 @@ public static partial class AssertM
 		sourceBuilder.AppendLine();
 		sourceBuilder.Append("\t}");
 		sourceBuilder.AppendLine();
+		sourceBuilder.AppendLine();
 	}
 
 	private void BuildCall(StringBuilder sourceBuilder, IMethodSymbol member)
 	{
 		StringBuilder callBuilder = new();
+		callBuilder.AppendLine();
+		callBuilder.Append("\t");
 		callBuilder.Append("\t");
 		if (MessageExtensionGenerator.IsReturnable(member))
 		{
@@ -196,7 +214,14 @@ public static partial class AssertM
 
 		if (MessageExtensionGenerator.HasNoMessage(member))
 		{
-			callBuilder.Append("WithMessage(userMessage, () => ");
+			if (this.IsTask(member.ReturnType))
+			{
+				callBuilder.Append("WithMessageAsync(userMessage, async () => await ");
+			}
+			else
+			{
+				callBuilder.Append("WithMessage(userMessage, () => ");
+			}
 		}
 
 		callBuilder.Append($"Xunit.Assert.{member.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}(");
@@ -224,7 +249,6 @@ public static partial class AssertM
 
 		//this.Log(context, callBuilder.ToString());
 		sourceBuilder.Append(callBuilder);
-		sourceBuilder.AppendLine();
 	}
 
 	private bool IsTask(ITypeSymbol memberReturnType)
