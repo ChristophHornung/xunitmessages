@@ -1,8 +1,11 @@
 # xunit.AssertMessages
+[![NuGet version (Xunit.AssertMessages)](https://img.shields.io/nuget/v/Xunit.AssertMessages.svg?style=flat-square)](https://www.nuget.org/packages/Xunit.AssertMessages/)
 
 Adds assert messages to all xunit `Assert` calls.
 
 ## Usage
+Get the nuget package [here](https://www.nuget.org/packages/Xunit.AssertMessages).
+
 All methods are static on the `AssertM` class.
 
 Simply add the nuget package to your test project and add
