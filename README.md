@@ -44,7 +44,7 @@ The vat was calculated incorrectly, the test expects 24.40$ but the calculated v
 
 is a lot more helpful than 
 ```
-expected 2440 got 3440
+Expected: 2440 Actual: 3440
 ```
 .
 
