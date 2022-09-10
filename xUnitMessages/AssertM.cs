@@ -1,4 +1,4 @@
-﻿namespace XunitMessages;
+﻿namespace XunitAssertMessages;
 
 using System.ComponentModel;
 using Xunit;

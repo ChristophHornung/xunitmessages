@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.Text;
 [Generator]
 public class MessageExtensionGenerator : ISourceGenerator
 {
-	private static readonly DiagnosticDescriptor InvalidXmlWarning = new DiagnosticDescriptor(
+	private static readonly DiagnosticDescriptor generationWarning = new DiagnosticDescriptor(
 		id: "XUNITMGEN001",
 		title: "Exception on generation",
 		messageFormat: "Exception '{0}' {1}.",
@@ -15,25 +15,23 @@ public class MessageExtensionGenerator : ISourceGenerator
 		DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
-
-	private static readonly DiagnosticDescriptor LogInfo = new DiagnosticDescriptor(
+#if DEBUG
+	private static readonly DiagnosticDescriptor logInfo = new DiagnosticDescriptor(
 		id: "XUNITMGENLOG",
 		title: "Log",
 		messageFormat: "{0}",
 		category: "MessageExtensionGenerator",
 		DiagnosticSeverity.Warning,
 		isEnabledByDefault: true);
+#endif
 
 	public void Execute(GeneratorExecutionContext context)
 	{
 		try
 		{
-			INamedTypeSymbol assertMType =
-				context.Compilation.Assembly.GetTypeByMetadataName("XunitMessages.AssertM")!;
-
 			StringBuilder sourceBuilder = new();
 			sourceBuilder.Append(@"
-namespace XunitMessages;
+namespace XunitAssertMessages;
 using System.Collections;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
@@ -71,7 +69,7 @@ public static partial class AssertM
 		}
 		catch (Exception e)
 		{
-			context.ReportDiagnostic(Diagnostic.Create(MessageExtensionGenerator.InvalidXmlWarning, Location.None,
+			context.ReportDiagnostic(Diagnostic.Create(MessageExtensionGenerator.generationWarning, Location.None,
 				e.Message, e.StackTrace));
 		}
 	}
@@ -284,7 +282,7 @@ public static partial class AssertM
 	private void Log(GeneratorExecutionContext context, string log)
 	{
 #if DEBUG
-		context.ReportDiagnostic(Diagnostic.Create(MessageExtensionGenerator.LogInfo, Location.None, log));
+		context.ReportDiagnostic(Diagnostic.Create(MessageExtensionGenerator.logInfo, Location.None, log));
 #endif
 	}
 }

@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Xunit;
 using Xunit.Sdk;
+using XunitAssertMessages;
 
 public class AssertMessageAsserts
 {
