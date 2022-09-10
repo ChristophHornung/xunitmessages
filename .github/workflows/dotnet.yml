@@ -27,4 +27,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: nuget-package
-        path: xUnitMessages/bin/release/*.nupkg
+        path: xunitmessages/xunitmessages/xUnitMessages/bin/Release/*.nupkg
