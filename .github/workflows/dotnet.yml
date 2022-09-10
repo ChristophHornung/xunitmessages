@@ -27,4 +27,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: nuget-package
-        path: $GITHUB_WORKSPACE/xUnitMessages/bin/Release/*.nupkg
+        path: ${{ github.workspace }}/xUnitMessages/bin/Release/*.nupkg
