@@ -7,7 +7,7 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>Christoph Hornung</Authors>
 		<PackageId>Xunit.AssertMessages</PackageId>
-		<Version>2.4.0-beta1</Version>
+		<Version>2.4.0</Version>
 		<Copyright>Christoph Hornung</Copyright>
 		<Description>Adds Assert overloads to add custom messages to assert failures.</Description>
 		<PackageProjectUrl>https://github.com/ChristophHornung/xunitmessages</PackageProjectUrl>
@@ -18,7 +18,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="xunit.assert" Version="[2.4.2, 2.5.0)" />
+		<PackageReference Include="xunit.assert" Version="[2.4.0, 2.5.0)" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\xUnitMessages.Generation\xUnitMessages.Generation.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
