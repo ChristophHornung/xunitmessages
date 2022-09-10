@@ -23,9 +23,12 @@ public class Test
 	public void AssertsSomethingKeepOriginalMessage()
 	{
 		// We can include the original message in our own.
-		Assert.Equal(10, 9, "This is so wrong. \r\n{xMsg}");
+		Assert.Equal(10, 9, "This is so wrong. {xMsg}");
 
 		// Without a message the message will be constructed by xUnit.
 		Assert.Equal(10, 9);
+
+		// For interpolated strings use a double curly.
+		Assert.Equal(10, 9, $"{9} is so wrong. {{xMsg}}");
 	}
 }

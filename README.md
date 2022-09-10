@@ -31,8 +31,13 @@ The shipping delay is incorrectly configured.
 You can includ the original message from xUnit via `{xMsg}`
 
 Example:
-```
+``` csharp
 Assert.Equal(10, 9, "This is so wrong. {xMsg}");
+```
+
+use double curly brackets with an interpolated string
+``` csharp
+Assert.Equal(10, 9, $"{9} is so wrong. {{xMsg}}");
 ```
 
 ## Motivation
