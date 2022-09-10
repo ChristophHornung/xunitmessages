@@ -9,12 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xUnitMessages.Generation", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xUnitMessages.Tests", "xUnitMessages.Tests\xUnitMessages.Tests.csproj", "{43AEFC0E-39C7-4604-9729-20DC3925F97A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xUnitMessages.Example", "xUnitMessages.Example\xUnitMessages.Example.csproj", "{971F70FB-8FE0-4532-8F1B-AC0C0C7444C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xUnitMessages.Example", "xUnitMessages.Example\xUnitMessages.Example.csproj", "{971F70FB-8FE0-4532-8F1B-AC0C0C7444C9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{B23FD402-EC31-4800-89F7-AE25C1DB2BCB}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		Directory.Build.props = Directory.Build.props
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
