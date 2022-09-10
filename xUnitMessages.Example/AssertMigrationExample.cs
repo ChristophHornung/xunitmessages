@@ -8,14 +8,24 @@ using Assert = XunitAssertMessages.AssertM;
 public class Test
 {
 	[Fact]
-	public void AssertsSomething()
+	public void AssertsSomethingMigration()
 	{
 		// Prior to the alias above this call worked using the Xunit.Assert class
 		Assert.Equal(10, 9);
 		// Now with the alias we can add a message
-		Assert.Equal(10, 9, "Message");
+		Assert.Equal(10, 9, "This is so wrong.");
 
 		// If for some reason you do not want to use the alias, the AssertM class can be used directly.
-		XunitAssertMessages.AssertM.Equal(10, 9, "Message");
+		XunitAssertMessages.AssertM.Equal(10, 9, "This is so wrong.");
+	}
+
+	[Fact]
+	public void AssertsSomethingKeepOriginalMessage()
+	{
+		// We can include the original message in our own.
+		Assert.Equal(10, 9, "This is so wrong. \r\n{xMsg}");
+
+		// Without a message the message will be constructed by xUnit.
+		Assert.Equal(10, 9);
 	}
 }

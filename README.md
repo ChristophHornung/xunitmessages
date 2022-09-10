@@ -28,6 +28,13 @@ Xunit.Sdk.XunitException
 The shipping delay is incorrectly configured.
 ```
 
+You can includ the original message from xUnit via `{xMsg}`
+
+Example:
+```
+Assert.Equal(10, 9, "This is so wrong. {xMsg}");
+```
+
 ## Motivation
 When working with tools like SpecFlow or other behaviour driven frameworks the result of a test
 is often not read by a programmer but by domain experts. In that scenario an error message like
@@ -43,3 +50,12 @@ expected 2440 got 3440
 
 The default `xunit.assert` package does not support custom messages except on the `Assert.True`
 and `Assert.False` methods, but (re-)writing tests with only those two methods is a lot of overhead.
+
+## Technical details
+Please note the following technical details:
+
+* The type of exception thrown by assert will always be `Xunit.Sdk.XunitExcepion`
+* The original xunit.assert exception will not be included as inner exception, instead 
+the original inner exception will be kept.
+* If using `{xMsg}` to include the original xunit.assert exception message a newline will be prepended.
+(As most exceptions will already include newlines in their message)

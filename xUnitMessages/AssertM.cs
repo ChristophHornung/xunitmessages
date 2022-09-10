@@ -1,6 +1,7 @@
 ﻿namespace XunitAssertMessages;
 
 using System.ComponentModel;
+using System.Diagnostics;
 using Xunit;
 using Xunit.Sdk;
 
@@ -25,6 +26,7 @@ public static partial class AssertM
 		throw new InvalidOperationException("Assert.ReferenceEquals should not be used");
 	}
 
+	//[DebuggerHidden]
 	private static void WithMessage(string? message, Action action)
 	{
 		try
@@ -33,10 +35,20 @@ public static partial class AssertM
 		}
 		catch (XunitException xException)
 		{
-			throw new XunitException(message ?? xException.Message, xException.InnerException);
+			if (message == null)
+			{
+				message = xException.Message;
+			}
+			else
+			{
+				message = message.Replace("{xMsg}", Environment.NewLine+ xException.Message);
+			}
+
+			throw new XunitException(message, xException.InnerException);
 		}
 	}
 
+	[DebuggerHidden]
 	private static async Task WithMessageAsync(string? message, Func<Task> action)
 	{
 		try
@@ -45,10 +57,20 @@ public static partial class AssertM
 		}
 		catch (XunitException xException)
 		{
-			throw new XunitException(message ?? xException.Message, xException.InnerException);
+			if (message == null)
+			{
+				message = xException.Message;
+			}
+			else
+			{
+				message = message.Replace("{xMsg}", Environment.NewLine+ xException.Message);
+			}
+
+			throw new XunitException(message, xException.InnerException);
 		}
 	}
 
+	[DebuggerHidden]
 	private static T WithMessage<T>(string? message, Func<T> action)
 	{
 		try
@@ -57,10 +79,20 @@ public static partial class AssertM
 		}
 		catch (XunitException xException)
 		{
-			throw new XunitException(message ?? xException.Message, xException.InnerException);
+			if (message == null)
+			{
+				message = xException.Message;
+			}
+			else
+			{
+				message = message.Replace("{xMsg}", Environment.NewLine+ xException.Message);
+			}
+
+			throw new XunitException(message, xException.InnerException);
 		}
 	}
 
+	[DebuggerHidden]
 	private static async Task<T> WithMessageAsync<T>(string? message, Func<Task<T>> action)
 	{
 		try
@@ -69,7 +101,16 @@ public static partial class AssertM
 		}
 		catch (XunitException xException)
 		{
-			throw new XunitException(message ?? xException.Message, xException.InnerException);
+			if (message == null)
+			{
+				message = xException.Message;
+			}
+			else
+			{
+				message = message.Replace("{xMsg}", Environment.NewLine+ xException.Message);
+			}
+
+			throw new XunitException(message, xException.InnerException);
 		}
 	}
 }
