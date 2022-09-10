@@ -10,7 +10,7 @@ using Xunit.Sdk;
 /// </summary>
 public static partial class AssertM
 {
-	/// <summary>Do not call this method.</summary>
+	/// <inheritdoc cref="Assert.Equal{T}(System.Collections.Generic.IEnumerable{T},System.Collections.Generic.IEnumerable{T})"/>
 	[Obsolete("This is an override of Object.Equals(). Call Assert.Equal() instead.", true)]
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public new static bool Equals(object a, object b)
@@ -18,7 +18,7 @@ public static partial class AssertM
 		throw new InvalidOperationException("Assert.Equals should not be used");
 	}
 
-	/// <summary>Do not call this method.</summary>
+	/// <inheritdoc cref="Assert.ReferenceEquals"/>
 	[Obsolete("This is an override of Object.ReferenceEquals(). Call Assert.Same() instead.", true)]
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public new static bool ReferenceEquals(object a, object b)
@@ -26,7 +26,7 @@ public static partial class AssertM
 		throw new InvalidOperationException("Assert.ReferenceEquals should not be used");
 	}
 
-	//[DebuggerHidden]
+	[DebuggerHidden]
 	private static void WithMessage(string? message, Action action)
 	{
 		try

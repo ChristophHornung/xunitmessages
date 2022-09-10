@@ -98,12 +98,40 @@ public static partial class AssertM
 		return parameterName;
 	}
 
+	/// <summary>
+	/// Builds the documentation for the overload.
+	/// </summary>
+	/// <param name="context">The context.</param>
+	/// <param name="sourceBuilder">The source builder to append to.</param>
+	/// <param name="member">The member to build the documentation for.</param>
+	private void BuildOverloadDocumentation(GeneratorExecutionContext context, StringBuilder sourceBuilder,
+		IMethodSymbol member)
+	{
+		StringBuilder methodDocBuilder = new();
+
+		methodDocBuilder.AppendLine(
+			$"\t/// <inheritdoc cref=\"{ToInheritdocComment(member.GetDocumentationCommentId()!)}\"/>");
+
+		sourceBuilder.Append(methodDocBuilder);
+	}
+
+	private string ToInheritdocComment(string documentationCommentId)
+	{
+		return documentationCommentId!
+			.Replace("M:", "")
+			.Replace("``1(", "{T}(")
+			.Replace("``2(", "{T,TValue}(")
+			.Replace("``0", "T")
+			.Replace("``1", "TValue");
+	}
+
 	private void BuildOverload(GeneratorExecutionContext context, StringBuilder sourceBuilder,
 		IMethodSymbol member)
 	{
 		StringBuilder methodSignatureBuilder = new();
+		this.BuildOverloadDocumentation(context, methodSignatureBuilder, member);
 		methodSignatureBuilder.Append(
-			$"\tpublic static {(this.IsTask(member.ReturnType) ? "async" : "")} {member.ReturnType.ToDisplayString()} {member.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}(");
+			$"\tpublic static{(this.IsTask(member.ReturnType) ? " async " : " ")}{member.ReturnType.ToDisplayString()} {member.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}(");
 		bool first = true;
 		foreach (IParameterSymbol parameter in member.Parameters)
 		{
@@ -183,7 +211,7 @@ public static partial class AssertM
 			}
 		}
 
-		this.Log(context, methodSignatureBuilder.ToString());
+		// this.Log(context, methodSignatureBuilder.ToString());
 		sourceBuilder.Append(methodSignatureBuilder);
 		sourceBuilder.AppendLine();
 		sourceBuilder.Append("\t{");
