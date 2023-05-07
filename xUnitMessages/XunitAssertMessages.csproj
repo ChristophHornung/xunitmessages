@@ -7,7 +7,7 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>Christoph Hornung</Authors>
 		<PackageId>Xunit.AssertMessages</PackageId>
-		<Version>2.4.0</Version>
+		<Version>2.4.1</Version>
 		<Copyright>Christoph Hornung</Copyright>
 		<Description>Adds Assert overloads to add custom messages to assert failures.</Description>
 		<PackageProjectUrl>https://github.com/ChristophHornung/xunitmessages</PackageProjectUrl>
@@ -15,6 +15,11 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<PackageReleaseNotes>
+			v.2.4.1
+			- Added nullability annotations.
+			- Fixed ambigous overload for Assert.Equal(string, string,...).
+		</PackageReleaseNotes>
 	</PropertyGroup>
 
 	<ItemGroup>
