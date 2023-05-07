@@ -2,6 +2,7 @@
 
 using System.Text;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 
 [Generator]
@@ -10,7 +11,7 @@ public class MessageExtensionGenerator : ISourceGenerator
 	private static readonly DiagnosticDescriptor generationWarning = new DiagnosticDescriptor(
 		id: "XUNITMGEN001",
 		title: "Exception on generation",
-		messageFormat: "Exception '{0}' {1}.",
+		messageFormat: "Exception '{0}' {1}",
 		category: "MessageExtensionGenerator",
 		DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
@@ -41,7 +42,7 @@ public static partial class AssertM
 
 			sourceBuilder.AppendLine();
 
-			var xUnitRef =
+			IAssemblySymbol xUnitRef =
 				context.Compilation.SourceModule.ReferencedAssemblySymbols.First(r => r.Name == "xunit.assert");
 
 			INamespaceSymbol xUnitNamespace =
@@ -49,16 +50,9 @@ public static partial class AssertM
 
 			INamedTypeSymbol assertType = xUnitNamespace.GetTypeMembers().Single(m => m.Name == "Assert");
 
-			foreach (var member in assertType.GetMembers()
+			foreach (IMethodSymbol? member in assertType.GetMembers()
 				         .OfType<IMethodSymbol>()
-				         .Where(m =>
-					         m.CanBeReferencedByName &&
-					         m.IsDefinition &&
-					         m.DeclaredAccessibility == Accessibility.Public &&
-					         m.Name != "Equals" &&
-					         m.Name != "ReferenceEquals" &&
-					         m.GetAttributes()
-						         .All(a => a.AttributeClass?.Name.Contains("ObsoleteAttribute") != true)))
+				         .Where(MessageExtensionGenerator.IsMethodToExtend))
 			{
 				this.BuildOverload(context, sourceBuilder, member);
 			}
@@ -76,6 +70,29 @@ public static partial class AssertM
 
 	public void Initialize(GeneratorInitializationContext context)
 	{
+	}
+
+	private static bool IsMethodToExtend(IMethodSymbol m)
+	{
+		return m.CanBeReferencedByName &&
+		       m.IsDefinition &&
+		       m.DeclaredAccessibility == Accessibility.Public &&
+		       m.Name != "Equals" &&
+		       m.Name != "ReferenceEquals" &&
+		       m.GetAttributes()
+			       .All(a => a.AttributeClass?.Name.Contains("ObsoleteAttribute") != true);
+	}
+
+	private static bool IsUnoverloadedStringEqual(IMethodSymbol methodSymbol)
+	{
+		// The Equal(string string) has an overload with optional parameters. That would make our own optional parameter overload ambiguous.
+		if (methodSymbol is { Name: "Equal", Parameters.Length: 2 })
+		{
+			return methodSymbol.Parameters[0].Type.ToDisplayString() == "string?" &&
+			       methodSymbol.Parameters[1].Type.ToDisplayString() == "string?";
+		}
+
+		return false;
 	}
 
 	private static bool HasNoMessage(IMethodSymbol member)
@@ -110,7 +127,7 @@ public static partial class AssertM
 		StringBuilder methodDocBuilder = new();
 
 		methodDocBuilder.AppendLine(
-			$"\t/// <inheritdoc cref=\"{ToInheritdocComment(member.GetDocumentationCommentId()!)}\"/>");
+			$"\t/// <inheritdoc cref=\"{this.ToInheritdocComment(member.GetDocumentationCommentId()!)}\"/>");
 
 		sourceBuilder.Append(methodDocBuilder);
 	}
@@ -144,6 +161,38 @@ public static partial class AssertM
 				methodSignatureBuilder.Append(", ");
 			}
 
+			// Copy the attributes from the parameter to the method signature
+			foreach (AttributeData attribute in parameter.GetAttributes().Where(this.CanCopyAttribute))
+			{
+				methodSignatureBuilder.Append("[");
+				methodSignatureBuilder.Append(attribute.AttributeClass!.ToDisplayString());
+
+				// Also copy the arguments of the attribute
+				if (attribute.ConstructorArguments.Length > 0)
+				{
+					methodSignatureBuilder.Append("(");
+					bool firstArgument = true;
+					foreach (TypedConstant argument in attribute.ConstructorArguments)
+					{
+						if (firstArgument)
+						{
+							firstArgument = false;
+						}
+						else
+						{
+							methodSignatureBuilder.Append(", ");
+						}
+
+						// Copy the argument as a named parameter
+						methodSignatureBuilder.Append(argument.ToCSharpString());
+					}
+
+					methodSignatureBuilder.Append(")");
+				}
+
+				methodSignatureBuilder.Append("]");
+			}
+
 			methodSignatureBuilder.Append(
 				parameter.Type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
 			methodSignatureBuilder.Append(" ");
@@ -162,7 +211,15 @@ public static partial class AssertM
 				methodSignatureBuilder.Append(", ");
 			}
 
-			methodSignatureBuilder.Append("string? userMessage = null");
+			if (MessageExtensionGenerator.IsUnoverloadedStringEqual(member))
+			{
+				// We can't make this optional here. It would make the overload ambiguous.
+				methodSignatureBuilder.Append("string? userMessage");
+			}
+			else
+			{
+				methodSignatureBuilder.Append("string? userMessage = null");
+			}
 		}
 
 		methodSignatureBuilder.Append(")");
@@ -212,6 +269,8 @@ public static partial class AssertM
 		}
 
 		// this.Log(context, methodSignatureBuilder.ToString());
+		sourceBuilder.AppendLine("// Disable the 'must have a non-null value when exiting as the call guarantees it.");
+		sourceBuilder.AppendLine("#pragma warning disable CS8777");
 		sourceBuilder.Append(methodSignatureBuilder);
 		sourceBuilder.AppendLine();
 		sourceBuilder.Append("\t{");
@@ -219,13 +278,26 @@ public static partial class AssertM
 		sourceBuilder.AppendLine();
 		sourceBuilder.Append("\t}");
 		sourceBuilder.AppendLine();
+		sourceBuilder.AppendLine("#pragma warning restore CS8777");
 		sourceBuilder.AppendLine();
+	}
+
+	private bool CanCopyAttribute(AttributeData arg)
+	{
+		if (arg.AttributeClass!.ToDisplayString() == "System.Runtime.CompilerServices.NullableAttribute")
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	private void BuildCall(StringBuilder sourceBuilder, IMethodSymbol member)
 	{
 		StringBuilder callBuilder = new();
 		callBuilder.AppendLine();
+
+
 		callBuilder.Append("\t");
 		callBuilder.Append("\t");
 		if (MessageExtensionGenerator.IsReturnable(member))
@@ -272,6 +344,7 @@ public static partial class AssertM
 		}
 
 		callBuilder.Append(");");
+		callBuilder.AppendLine();
 
 		//this.Log(context, callBuilder.ToString());
 		sourceBuilder.Append(callBuilder);

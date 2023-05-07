@@ -2,7 +2,6 @@
 
 using System.Collections;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Xunit;
 using Xunit.Sdk;
@@ -24,52 +23,59 @@ public class AssertMessageAsserts
 		Assert.StartsWith("Message", exception.UserMessage);
 	}
 
+	private class UnchangingObject : INotifyPropertyChanged
+	{
+#pragma warning disable CS0067
+		public event PropertyChangedEventHandler? PropertyChanged;
+#pragma warning restore CS0067
+	}
+
 	[Fact]
 	public void All2UsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.All(new[] {"T"}, _ => throw new Exception(), "Message"));
+			AssertM.All(new[] { "T" }, _ => throw new Exception(), "Message"));
 	}
 
 	[Fact]
 	public void AllUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.All(new[] {"T"}, (_, _) => throw new Exception(), "Message"));
+			AssertM.All(new[] { "T" }, (_, _) => throw new Exception(), "Message"));
 	}
 
 	[Fact]
 	public void AssertEmptyUsesMessage()
 	{
-		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.Empty(new[] {"T"}, "Message"));
+		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.Empty(new[] { "T" }, "Message"));
 	}
 
 	[Fact]
 	public void CollectionUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Collection(new[] {"T"}, Array.Empty<Action<string>>(), "Message"));
+			AssertM.Collection(new[] { "T" }, Array.Empty<Action<string>>(), "Message"));
 	}
 
 	[Fact]
 	public void ContainsUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Contains(new[] {"T"}, _ => false, "Message"));
+			AssertM.Contains(new[] { "T" }, _ => false, "Message"));
 	}
 
 	[Fact]
 	public void ContainsUsesMessage2()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Contains(12, (IDictionary<int, string>)new Dictionary<int, string> {{1, "A"}}, "Message"));
+			AssertM.Contains(12, (IDictionary<int, string>)new Dictionary<int, string> { { 1, "A" } }, "Message"));
 	}
 
 	[Fact]
 	public void ContainsUsesMessage3()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Contains(12, (IReadOnlyDictionary<int, string>)new Dictionary<int, string> {{1, "A"}},
+			AssertM.Contains(12, (IReadOnlyDictionary<int, string>)new Dictionary<int, string> { { 1, "A" } },
 				"Message"));
 	}
 
@@ -83,14 +89,14 @@ public class AssertMessageAsserts
 	public void ContainsUsesMessage5()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Contains(12, new[] {1}, "Message"));
+			AssertM.Contains(12, new[] { 1 }, "Message"));
 	}
 
 	[Fact]
 	public void ContainsUsesMessage6()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Contains("A", new[] {"B"}, StringComparer.InvariantCultureIgnoreCase, "Message"));
+			AssertM.Contains("A", new[] { "B" }, StringComparer.InvariantCultureIgnoreCase, "Message"));
 	}
 
 	[Fact]
@@ -104,39 +110,39 @@ public class AssertMessageAsserts
 	public void DistinctUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Distinct(new[] {"A", "A"}, StringComparer.InvariantCultureIgnoreCase, "Message"));
+			AssertM.Distinct(new[] { "A", "A" }, StringComparer.InvariantCultureIgnoreCase, "Message"));
 	}
 
 	[Fact]
 	public void DistinctUsesMessage2()
 	{
-		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.Distinct(new[] {"A", "A"}, "Message"));
+		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.Distinct(new[] { "A", "A" }, "Message"));
 	}
 
 	[Fact]
 	public void DoesNotContainUsesMessage()
 	{
-		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.DoesNotContain(new[] {"B"}, _ => true, "Message"));
+		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.DoesNotContain(new[] { "B" }, _ => true, "Message"));
 	}
 
 	[Fact]
 	public void DoesNotContainUsesMessage2()
 	{
-		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.DoesNotContain("B", new[] {"B"}, "Message"));
+		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.DoesNotContain("B", new[] { "B" }, "Message"));
 	}
 
 	[Fact]
 	public void DoesNotContainUsesMessage3()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.DoesNotContain("B", new[] {"B"}, StringComparer.InvariantCultureIgnoreCase, "Message"));
+			AssertM.DoesNotContain("B", new[] { "B" }, StringComparer.InvariantCultureIgnoreCase, "Message"));
 	}
 
 	[Fact]
 	public void DoesNotContainUsesMessage4()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.DoesNotContain("B",
-			(IDictionary<string, string>)new Dictionary<string, string> {{"B", "Z"}}, "Message"));
+			(IDictionary<string, string>)new Dictionary<string, string> { { "B", "Z" } }, "Message"));
 	}
 
 	[Fact]
@@ -156,7 +162,7 @@ public class AssertMessageAsserts
 	public void DoesNotContainUsesMessage7()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.DoesNotContain("A",
-			(IReadOnlyDictionary<string, string>)new Dictionary<string, string> {{"A", "Z"}}, "Message"));
+			(IReadOnlyDictionary<string, string>)new Dictionary<string, string> { { "A", "Z" } }, "Message"));
 	}
 
 	[Fact]
@@ -174,7 +180,7 @@ public class AssertMessageAsserts
 	[Fact]
 	public void EmptyUsesMessage()
 	{
-		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.Empty(new[] {"A"}, "Message"));
+		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.Empty(new[] { "A" }, "Message"));
 	}
 
 	[Fact]
@@ -194,7 +200,7 @@ public class AssertMessageAsserts
 	public void EqualUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Equal((IEnumerable<string>)new List<string>(), new List<string> {"A"}, "Message"));
+			AssertM.Equal((IEnumerable<string>)new List<string>(), new List<string> { "A" }, "Message"));
 	}
 
 	[Fact]
@@ -208,7 +214,7 @@ public class AssertMessageAsserts
 	public void EqualUsesMessage11()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Equal(new List<string>(), new List<string> {"A"}, StringComparer.OrdinalIgnoreCase, "Message"));
+			AssertM.Equal(new List<string>(), new List<string> { "A" }, StringComparer.OrdinalIgnoreCase, "Message"));
 	}
 
 	[Fact]
@@ -356,7 +362,7 @@ public class AssertMessageAsserts
 
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Multiple(new Action[] {() => Assert.False(true)}, "Message"));
+			AssertM.Multiple(new Action[] { () => Assert.False(true) }, "Message"));
 	}
 
 	[Fact]
@@ -454,28 +460,28 @@ public class AssertMessageAsserts
 	public void ProperSubsetUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.ProperSubset(new HashSet<string> {"A"}, new HashSet<string> {"B"}, "Message"));
+			AssertM.ProperSubset(new HashSet<string> { "A" }, new HashSet<string> { "B" }, "Message"));
 	}
 
 	[Fact]
 	public void ProperSupersetUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.ProperSuperset(new HashSet<string> {"A"}, new HashSet<string> {"B"}, "Message"));
+			AssertM.ProperSuperset(new HashSet<string> { "A" }, new HashSet<string> { "B" }, "Message"));
 	}
 
 	[Fact]
 	public async Task PropertyChangedAsyncUsesMessage()
 	{
 		await AssertMessageAsserts.AssertWrapsCorrectly(async () =>
-			await AssertM.PropertyChangedAsync(new NotifyChangeObject(), "A", () => Task.CompletedTask, "Message"));
+			await AssertM.PropertyChangedAsync(new UnchangingObject(), "A", () => Task.CompletedTask, "Message"));
 	}
 
 	[Fact]
 	public void PropertyChangedUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.PropertyChanged(new NotifyChangeObject(), "A", () => { }, "Message"));
+			AssertM.PropertyChanged(new UnchangingObject(), "A", () => { }, "Message"));
 	}
 
 	[Fact]
@@ -566,14 +572,14 @@ public class AssertMessageAsserts
 	public void SubsetUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Subset(new HashSet<string> {"A"}, new HashSet<string> {"B"}, "Message"));
+			AssertM.Subset(new HashSet<string> { "A" }, new HashSet<string> { "B" }, "Message"));
 	}
 
 	[Fact]
 	public void SupersetUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Superset(new HashSet<string> {"A"}, new HashSet<string> {"B"}, "Message"));
+			AssertM.Superset(new HashSet<string> { "A" }, new HashSet<string> { "B" }, "Message"));
 	}
 
 	[Fact]
@@ -658,27 +664,5 @@ public class AssertMessageAsserts
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
 			AssertM.Throws<ArgumentException>("A", () => "A", "Message"));
-	}
-
-	private class NotifyChangeObject : INotifyPropertyChanged
-	{
-		public event PropertyChangedEventHandler? PropertyChanged;
-
-		protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-		{
-			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
-
-		protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-		{
-			if (EqualityComparer<T>.Default.Equals(field, value))
-			{
-				return false;
-			}
-
-			field = value;
-			this.OnPropertyChanged(propertyName);
-			return true;
-		}
 	}
 }
