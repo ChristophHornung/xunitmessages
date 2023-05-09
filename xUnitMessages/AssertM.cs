@@ -26,6 +26,14 @@ public static partial class AssertM
 		throw new InvalidOperationException("Assert.ReferenceEquals should not be used");
 	}
 
+	/// <inheritdoc cref="Xunit.Assert.Equal(System.String,System.String)"/>
+	public static void Equal(string? expected, string? actual)
+	{
+		// We add a non-message overload to avoid having ambiguous methods on an Equal("a","a") call.
+		WithMessage(null, () => Xunit.Assert.Equal(expected, actual));
+
+	}
+
 	[DebuggerHidden]
 	private static void WithMessage(string? message, Action action)
 	{

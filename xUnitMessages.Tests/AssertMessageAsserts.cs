@@ -12,7 +12,6 @@ public class AssertMessageAsserts
 	private static void AssertWrapsCorrectly(Action t)
 	{
 		var exception = Assert.ThrowsAny<XunitException>(t.Invoke);
-
 		Assert.StartsWith("Message", exception.UserMessage);
 	}
 
