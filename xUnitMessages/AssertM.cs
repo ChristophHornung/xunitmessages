@@ -30,8 +30,7 @@ public static partial class AssertM
 	public static void Equal(string? expected, string? actual)
 	{
 		// We add a non-message overload to avoid having ambiguous methods on an Equal("a","a") call.
-		WithMessage(null, () => Xunit.Assert.Equal(expected, actual));
-
+		AssertM.WithMessage(null, () => Assert.Equal(expected, actual));
 	}
 
 	[DebuggerHidden]
@@ -43,19 +42,10 @@ public static partial class AssertM
 		}
 		catch (XunitException xException)
 		{
-			if (message == null)
-			{
-				message = xException.Message;
-			}
-			else
-			{
-				message = message.Replace("{xMsg}", Environment.NewLine+ xException.Message);
-			}
-
-			throw new XunitException(message, xException.InnerException);
+			throw AssertM.WrapException(message, xException);
 		}
 	}
-
+	
 	[DebuggerHidden]
 	private static async Task WithMessageAsync(string? message, Func<Task> action)
 	{
@@ -65,16 +55,7 @@ public static partial class AssertM
 		}
 		catch (XunitException xException)
 		{
-			if (message == null)
-			{
-				message = xException.Message;
-			}
-			else
-			{
-				message = message.Replace("{xMsg}", Environment.NewLine+ xException.Message);
-			}
-
-			throw new XunitException(message, xException.InnerException);
+			throw AssertM.WrapException(message, xException);
 		}
 	}
 
@@ -87,16 +68,7 @@ public static partial class AssertM
 		}
 		catch (XunitException xException)
 		{
-			if (message == null)
-			{
-				message = xException.Message;
-			}
-			else
-			{
-				message = message.Replace("{xMsg}", Environment.NewLine+ xException.Message);
-			}
-
-			throw new XunitException(message, xException.InnerException);
+			throw AssertM.WrapException(message, xException);
 		}
 	}
 
@@ -109,16 +81,21 @@ public static partial class AssertM
 		}
 		catch (XunitException xException)
 		{
-			if (message == null)
-			{
-				message = xException.Message;
-			}
-			else
-			{
-				message = message.Replace("{xMsg}", Environment.NewLine+ xException.Message);
-			}
-
-			throw new XunitException(message, xException.InnerException);
+			throw AssertM.WrapException(message, xException);
 		}
+	}
+
+	private static XunitException WrapException(string? message, XunitException xException)
+	{
+		if (message == null)
+		{
+			message = xException.Message;
+		}
+		else
+		{
+			message = message.Replace("{xMsg}", Environment.NewLine + xException.Message);
+		}
+
+		return new XunitException(message, xException.InnerException);
 	}
 }

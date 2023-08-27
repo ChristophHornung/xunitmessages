@@ -34,6 +34,8 @@ public class MessageExtensionGenerator : ISourceGenerator
 			sourceBuilder.Append(@"
 namespace XunitAssertMessages;
 using System.Collections;
+using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 
@@ -225,6 +227,7 @@ public static partial class AssertM
 		methodSignatureBuilder.Append(")");
 
 		if (member.TypeParameters.Any(t => t.ConstraintTypes.Any()) ||
+		    member.TypeParameters.Any(t => t.HasValueTypeConstraint) ||
 		    member.TypeParameters.Any(t => t.HasNotNullConstraint))
 		{
 			methodSignatureBuilder.Append(" where ");
@@ -233,7 +236,9 @@ public static partial class AssertM
 
 		foreach (ITypeParameterSymbol? typeParameter in member.TypeParameters)
 		{
-			if (typeParameter.ConstraintTypes.Any() || typeParameter.HasNotNullConstraint)
+			if (typeParameter.ConstraintTypes.Any() || 
+			    typeParameter.HasValueTypeConstraint ||
+			    typeParameter.HasNotNullConstraint)
 			{
 				first = true;
 				methodSignatureBuilder.Append(typeParameter.ToDisplayString());
@@ -264,6 +269,20 @@ public static partial class AssertM
 					}
 
 					methodSignatureBuilder.Append("notnull");
+				}
+
+				if (typeParameter.HasValueTypeConstraint)
+				{
+					if (first)
+					{
+						first = false;
+					}
+					else
+					{
+						methodSignatureBuilder.Append(", ");
+					}
+
+					methodSignatureBuilder.Append("struct");
 				}
 			}
 		}

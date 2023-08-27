@@ -2,6 +2,7 @@
 
 using System.Collections;
 using System.ComponentModel;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Xunit;
 using Xunit.Sdk;
@@ -12,14 +13,14 @@ public class AssertMessageAsserts
 	private static void AssertWrapsCorrectly(Action t)
 	{
 		var exception = Assert.ThrowsAny<XunitException>(t.Invoke);
-		Assert.StartsWith("Message", exception.UserMessage);
+		Assert.StartsWith("Message", exception.Message);
 	}
 
 	private static async Task AssertWrapsCorrectly(Func<Task> t)
 	{
 		var exception = await Assert.ThrowsAnyAsync<XunitException>(t.Invoke);
 
-		Assert.StartsWith("Message", exception.UserMessage);
+		Assert.StartsWith("Message", exception.Message);
 	}
 
 	private class UnchangingObject : INotifyPropertyChanged
@@ -27,6 +28,36 @@ public class AssertMessageAsserts
 #pragma warning disable CS0067
 		public event PropertyChangedEventHandler? PropertyChanged;
 #pragma warning restore CS0067
+	}
+
+	[Fact]
+	public void WarnAboutBaseEquals()
+	{
+		Assert.NotEmpty(
+			typeof(AssertM).GetMethod(nameof(AssertM.Equals),
+					BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.Public)!
+				.GetCustomAttributes(true).OfType<ObsoleteAttribute>()
+				.Where(a => a.IsError));
+		Assert.NotEmpty(
+			typeof(AssertM).GetMethod(nameof(AssertM.ReferenceEquals),
+					BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.Public)!
+				.GetCustomAttributes(true).OfType<ObsoleteAttribute>()
+				.Where(a => a.IsError));
+	}
+
+	[Fact]
+	public void NullMessageDoesNotAppend()
+	{
+		static void AssertWrapsCorrectlyWithoutMessage(Action unwrapped, Action wrapped)
+		{
+			var exception = Assert.ThrowsAny<XunitException>(wrapped.Invoke);
+			var originalException = Assert.ThrowsAny<XunitException>(unwrapped.Invoke);
+			Assert.Equal(exception.Message, originalException.Message);
+		}
+
+		AssertWrapsCorrectlyWithoutMessage(
+			() => Assert.NotNull(null),
+			() => AssertM.NotNull(null, null));
 	}
 
 	[Fact]
@@ -535,15 +566,16 @@ public class AssertMessageAsserts
 	[Fact]
 	public void SingleUsesMessage3()
 	{
+		List<char> chars = "A".ToList();
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Single("A", _ => false, "Message"));
+			AssertM.Single(chars, _ => false, "Message"));
 	}
 
 	[Fact]
 	public void SingleUsesMessage4()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Single("AB", "Message"));
+			AssertM.Single("ABCDEFG", "Message"));
 	}
 
 	[Fact]
