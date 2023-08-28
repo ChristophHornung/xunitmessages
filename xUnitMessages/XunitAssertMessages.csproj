@@ -16,14 +16,18 @@
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<PackageReleaseNotes>
+			v.2.5.1
+			- Added strong name signing.
 			v.2.5.0
-			- Updated to xUnit 2.5.0
+			- Updated to xUnit 2.5.0.
 			v.2.4.1
 			- Added nullability annotations.
 			- Fixed ambigous overload for Assert.Equal(string, string,...).
 			v.2.4.2
 			- Fixed more ambigous overload for Assert.Equal(string, string,...).
 		</PackageReleaseNotes>
+		<SignAssembly>True</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\signingkey.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 	<ItemGroup>
