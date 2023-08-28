@@ -7,7 +7,7 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>Christoph Hornung</Authors>
 		<PackageId>Xunit.AssertMessages</PackageId>
-		<Version>2.5.0</Version>
+		<Version>2.5.1</Version>
 		<Copyright>Christoph Hornung</Copyright>
 		<Description>Adds Assert overloads to add custom messages to assert failures.</Description>
 		<PackageProjectUrl>https://github.com/ChristophHornung/xunitmessages</PackageProjectUrl>
