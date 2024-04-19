@@ -1,6 +1,7 @@
 ﻿namespace XunitMessages.Tests;
 
 using System.Collections;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -31,40 +32,17 @@ public class AssertMessageAsserts
 	}
 
 	[Fact]
-	public void WarnAboutBaseEquals()
+	public async Task AllAsyncUsesMessage()
 	{
-		Assert.NotEmpty(
-			typeof(AssertM).GetMethod(nameof(AssertM.Equals),
-					BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.Public)!
-				.GetCustomAttributes(true).OfType<ObsoleteAttribute>()
-				.Where(a => a.IsError));
-		Assert.NotEmpty(
-			typeof(AssertM).GetMethod(nameof(AssertM.ReferenceEquals),
-					BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.Public)!
-				.GetCustomAttributes(true).OfType<ObsoleteAttribute>()
-				.Where(a => a.IsError));
+		await AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.AllAsync(new[] { "T" }, _ => Task.FromException(new Exception()), "Message"));
 	}
 
 	[Fact]
-	public void NullMessageDoesNotAppend()
+	public async Task AllAsyncUsesMessage2()
 	{
-		static void AssertWrapsCorrectlyWithoutMessage(Action unwrapped, Action wrapped)
-		{
-			var exception = Assert.ThrowsAny<XunitException>(wrapped.Invoke);
-			var originalException = Assert.ThrowsAny<XunitException>(unwrapped.Invoke);
-			Assert.Equal(exception.Message, originalException.Message);
-		}
-
-		AssertWrapsCorrectlyWithoutMessage(
-			() => Assert.NotNull(null),
-			() => AssertM.NotNull(null, null));
-	}
-
-	[Fact]
-	public void All2UsesMessage()
-	{
-		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.All(new[] { "T" }, _ => throw new Exception(), "Message"));
+		await AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.AllAsync(new[] { "T" }, (_, _) => Task.FromException(new Exception()), "Message"));
 	}
 
 	[Fact]
@@ -75,9 +53,23 @@ public class AssertMessageAsserts
 	}
 
 	[Fact]
+	public void AllUsesMessage2()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.All(new[] { "T" }, _ => throw new Exception(), "Message"));
+	}
+
+	[Fact]
 	public void AssertEmptyUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.Empty(new[] { "T" }, "Message"));
+	}
+
+	[Fact]
+	public async Task CollectionAsyncUsesMessage()
+	{
+		await AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.CollectionAsync(new[] { "T" }, [_ => Task.FromException(new Exception())], "Message"));
 	}
 
 	[Fact]
@@ -92,6 +84,35 @@ public class AssertMessageAsserts
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
 			AssertM.Contains(new[] { "T" }, _ => false, "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage10()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains("C",
+				new Dictionary<string, string>([new KeyValuePair<string, string>("A", "A")]).AsReadOnly(), "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage11()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains("C", new HashSet<string>(["A"]), "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage12()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains("C", (ISet<string>)new HashSet<string>(["A"]), "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage13()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains("C", new SortedSet<string>(["A"]), "Message"));
 	}
 
 	[Fact]
@@ -137,6 +158,22 @@ public class AssertMessageAsserts
 	}
 
 	[Fact]
+	public void ContainsUsesMessage8()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains("C",
+				new ConcurrentDictionary<string, string>([new KeyValuePair<string, string>("A", "A")]), "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage9()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains("C",
+				new Dictionary<string, string>([new KeyValuePair<string, string>("A", "A")]), "Message"));
+	}
+
+	[Fact]
 	public void DistinctUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
@@ -147,6 +184,30 @@ public class AssertMessageAsserts
 	public void DistinctUsesMessage2()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.Distinct(new[] { "A", "A" }, "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContain4()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain("A",
+				new Dictionary<string, string>([new KeyValuePair<string, string>("A", "A")]).AsReadOnly(), "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContain5()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain("A",
+				new Dictionary<string, string>([new KeyValuePair<string, string>("A", "A")]), "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContain6()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain("A",
+				new ConcurrentDictionary<string, string>([new KeyValuePair<string, string>("A", "A")]), "Message"));
 	}
 
 	[Fact]
@@ -208,9 +269,36 @@ public class AssertMessageAsserts
 	}
 
 	[Fact]
+	public void DoestNotContainUsesMessage()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain("A", new SortedSet<string>(["A"]), "Message"));
+	}
+
+	[Fact]
+	public void DoestNotContainUsesMessage2()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain("A", (ISet<string>)new HashSet<string>(["A"]), "Message"));
+	}
+
+	[Fact]
+	public void DoestNotContainUsesMessage3()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain("A", new HashSet<string>(["A"]), "Message"));
+	}
+
+	[Fact]
 	public void EmptyUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.Empty(new[] { "A" }, "Message"));
+	}
+
+	[Fact]
+	public void EmptyUsesMessage2()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.Empty("A", "Message"));
 	}
 
 	[Fact]
@@ -251,7 +339,57 @@ public class AssertMessageAsserts
 	public void EqualUsesMessage12()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(new List<string>() { "A" }, new List<string> { "A" },
+				new Func<string, string, bool>((_, _) => false), "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage13()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(new object(), new object(), new Func<object, object, bool>((_, _) => false), "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage14()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
 			AssertM.Equal(0.1, 2.2, 1, "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage15()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(0.1f, 2.2f, 1, "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage16()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(0.1f, 2.2f, 1, MidpointRounding.AwayFromZero, "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage17()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(DateTime.Now, DateTime.Now.AddHours(1), "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage18()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(DateTimeOffset.Now, DateTimeOffset.Now.AddHours(1), "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage19()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(DateTimeOffset.Now, DateTimeOffset.Now.AddHours(1), TimeSpan.FromMinutes(59), "Message"));
 	}
 
 	[Fact]
@@ -346,6 +484,20 @@ public class AssertMessageAsserts
 	}
 
 	[Fact]
+	public void IsNotAssignableFromUsesMessage()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.IsNotAssignableFrom(typeof(string), "A", "Message"));
+	}
+
+	[Fact]
+	public void IsNotAssignableFromUsesMessage2()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.IsNotAssignableFrom<string>("A", "Message"));
+	}
+
+	[Fact]
 	public void IsNotTypeUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
@@ -410,6 +562,34 @@ public class AssertMessageAsserts
 	}
 
 	[Fact]
+	public void NotEqualUsesMessage10()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.NotEqual(1.95f, 2.0f, 1, "Message"));
+	}
+
+	[Fact]
+	public void NotEqualUsesMessage11()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.NotEqual(1.95f, 2.0f, 1, MidpointRounding.AwayFromZero, "Message"));
+	}
+
+	[Fact]
+	public void NotEqualUsesMessage12()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.NotEqual(1.0f, 2.0f, 1.0f, "Message"));
+	}
+
+	[Fact]
+	public void NotEqualUsesMessage13()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.NotEqual(1.0f, 2.0f, (_, _) => true, "Message"));
+	}
+
+	[Fact]
 	public void NotEqualUsesMessage2()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
@@ -445,6 +625,28 @@ public class AssertMessageAsserts
 	}
 
 	[Fact]
+	public void NotEqualUsesMessage7()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.NotEqual(new List<string>(["A"]), new List<string>(["A"]), (string _, string _) => true,
+				"Message"));
+	}
+
+	[Fact]
+	public void NotEqualUsesMessage8()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.NotEqual(1.95, 2.0, 1, MidpointRounding.AwayFromZero, "Message"));
+	}
+
+	[Fact]
+	public void NotEqualUsesMessage9()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.NotEqual(1.0, 2.0, 1.0, "Message"));
+	}
+
+	[Fact]
 	public void NotInRangeUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
@@ -466,6 +668,13 @@ public class AssertMessageAsserts
 	}
 
 	[Fact]
+	public void NotNullUsesMessage2()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.NotNull((int?)null, "Message"));
+	}
+
+	[Fact]
 	public void NotSameUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
@@ -480,10 +689,32 @@ public class AssertMessageAsserts
 	}
 
 	[Fact]
+	public void NullMessageDoesNotAppend()
+	{
+		static void AssertWrapsCorrectlyWithoutMessage(Action unwrapped, Action wrapped)
+		{
+			var exception = Assert.ThrowsAny<XunitException>(wrapped.Invoke);
+			var originalException = Assert.ThrowsAny<XunitException>(unwrapped.Invoke);
+			Assert.Equal(exception.Message, originalException.Message);
+		}
+
+		AssertWrapsCorrectlyWithoutMessage(
+			() => Assert.NotNull(null),
+			() => AssertM.NotNull(null, null));
+	}
+
+	[Fact]
 	public void NullUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
 			AssertM.Null("A", "Message"));
+	}
+
+	[Fact]
+	public void NullUsesMessage2()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Null((int?)3, "Message"));
 	}
 
 	[Fact]
@@ -518,28 +749,105 @@ public class AssertMessageAsserts
 	public async Task RaisesAnyAsyncUsesMessage()
 	{
 		await AssertMessageAsserts.AssertWrapsCorrectly(async () =>
-			await AssertM.RaisesAnyAsync<object>(_ => { }, _ => { }, () => Task.CompletedTask, "Message"));
+			await AssertM.RaisesAnyAsync<object>(new Action<Action<object>>(_ => { }), _ => { },
+				() => Task.CompletedTask, "Message"));
+	}
+
+	[Fact]
+	public async Task RaisesAnyEventHandlerAsyncUsesMessage()
+	{
+		await AssertMessageAsserts.AssertWrapsCorrectly(async () =>
+			await AssertM.RaisesAnyAsync<object>(new Action<EventHandler<object>>(_ => { }), _ => { },
+				() => Task.CompletedTask, "Message"));
+	}
+
+	[Fact]
+	public void RaisesAnyEventHandlerUsesMessage()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.RaisesAny<object>(new Action<EventHandler<object>>(_ => { }), _ => { }, () => { }, "Message"));
 	}
 
 	[Fact]
 	public void RaisesAnyUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.RaisesAny<object>(_ => { }, _ => { }, () => { }, "Message"));
+			AssertM.RaisesAny(_ => { }, _ => { }, () => { }, "Message"));
+	}
+
+	[Fact]
+	public async Task RaisesAnyAsyncUsesMessage2()
+	{
+		await AssertMessageAsserts.AssertWrapsCorrectly(async () =>
+			await AssertM.RaisesAnyAsync(_ => { }, _ => { },
+				() => Task.CompletedTask, "Message"));
+	}
+
+	[Fact]
+	public void RaisesAnyUsesMessage2()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.RaisesAny<object>(new Action<Action<object>>(_ => { }), _ => { }, () => { }, "Message"));
+	}
+
+	[Fact]
+	public void RaisesAnyUsesMessage3()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.RaisesAny<object>(new Action<Action<object>>(_ => { }), _ => { }, () => { }, "Message"));
 	}
 
 	[Fact]
 	public async Task RaisesAsyncUsesMessage()
 	{
 		await AssertMessageAsserts.AssertWrapsCorrectly(async () =>
-			await AssertM.RaisesAsync<object>(_ => { }, _ => { }, () => Task.CompletedTask, "Message"));
+			await AssertM.RaisesAsync<object>(new Action<Action<object>>(_ => { }), _ => { }, () => Task.CompletedTask,
+				"Message"));
+	}
+
+	[Fact]
+	public async Task RaisesAsyncUsesMessage2()
+	{
+		await AssertMessageAsserts.AssertWrapsCorrectly(async () =>
+			await AssertM.RaisesAsync(_ => { }, _ => { }, () => Task.CompletedTask,
+				"Message"));
+	}
+
+	[Fact]
+	public async Task RaisesAsyncUsesMessage3()
+	{
+		await AssertMessageAsserts.AssertWrapsCorrectly(async () =>
+			await AssertM.RaisesAsync<object>(new Action<EventHandler<object>>(_ => { }), _ => { },
+				() => Task.CompletedTask, "Message"));
+	}
+
+	[Fact]
+	public void RaisesEventHandlerUsesMessage()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Raises<object>(new Action<EventHandler<object>>(_ => { }), _ => { }, () => { }, "Message"));
 	}
 
 	[Fact]
 	public void RaisesUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Raises<object>(_ => { }, _ => { }, () => { }, "Message"));
+			AssertM.Raises(_ => { }, _ => { }, () => { }, "Message"));
+	}
+
+	[Fact]
+	public void RaisesUsesMessage2()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Raises<object>(new Action<Action<object>>(_ => { }), _ => { }, () => { }, "Message"));
+	}
+
+	[Fact]
+	public void RaisesUsesMessage3()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Raises<string>(() => (Assert.RaisedEvent<string>?)null, () => { }, () => { }, () => { },
+				"Message"));
 	}
 
 	[Fact]
@@ -695,5 +1003,20 @@ public class AssertMessageAsserts
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
 			AssertM.Throws<ArgumentException>("A", () => "A", "Message"));
+	}
+
+	[Fact]
+	public void WarnAboutBaseEquals()
+	{
+		Assert.NotEmpty(
+			typeof(AssertM).GetMethod(nameof(AssertM.Equals),
+					BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.Public)!
+				.GetCustomAttributes(true).OfType<ObsoleteAttribute>()
+				.Where(a => a.IsError));
+		Assert.NotEmpty(
+			typeof(AssertM).GetMethod(nameof(AssertM.ReferenceEquals),
+					BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.Public)!
+				.GetCustomAttributes(true).OfType<ObsoleteAttribute>()
+				.Where(a => a.IsError));
 	}
 }

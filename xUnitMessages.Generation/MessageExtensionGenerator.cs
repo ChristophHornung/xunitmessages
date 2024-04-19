@@ -196,7 +196,7 @@ public static partial class AssertM
 			}
 
 			methodSignatureBuilder.Append(
-				parameter.Type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
+				parameter.Type.ToDisplayString());
 			methodSignatureBuilder.Append(" ");
 			methodSignatureBuilder.Append(MessageExtensionGenerator.EscapeParameterName(parameter.Name));
 			if (parameter.HasExplicitDefaultValue)
