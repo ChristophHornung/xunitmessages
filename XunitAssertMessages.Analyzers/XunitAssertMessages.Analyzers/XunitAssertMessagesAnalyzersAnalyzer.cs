@@ -13,13 +13,14 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 	private static readonly DiagnosticDescriptor DebugOnlyRule = new(
 		"debug001", "Debug Only output",
 		"{0}", "Debug",
-		DiagnosticSeverity.Warning, isEnabledByDefault: true);
+		DiagnosticSeverity.Warning, isEnabledByDefault: true, customTags: [WellKnownDiagnosticTags.CompilationEnd]);
 #endif
 
 	private static readonly DiagnosticDescriptor AssertM001MustReferenceXunitAssertRule = new(
-		"assertM001", "When referencing XunitAssertMessages.Analyzers the Xunit.Analyzers nuget needs to be referenced as well",
-		"Reference the Xunit.Analyzers for XunitAssertMessages.Analyzers to work.", "AssertM",
-		DiagnosticSeverity.Warning, isEnabledByDefault: true);
+		"assertM001",
+		"When referencing XunitAssertMessages.Analyzers the Xunit.Analyzers nuget needs to be referenced as well",
+		"Reference the Xunit.Analyzers for XunitAssertMessages.Analyzers to work", "AssertM",
+		DiagnosticSeverity.Warning, isEnabledByDefault: true, customTags: [WellKnownDiagnosticTags.CompilationEnd]);
 
 	private Assembly? xunitAssembly;
 	private string? test;
@@ -88,11 +89,11 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 			this.test = "No base";
 		}
 
-		context.RegisterCompilationStartAction(context => { this.AnalyzeCompilation(context); });
+		context.RegisterCompilationStartAction(this.AnalyzeCompilation);
 
 		foreach (object instance in this.instances)
 		{
-			context.RegisterCompilationStartAction(context =>
+			context.RegisterCompilationStartAction(ctx =>
 			{
 				// This is the original code that we are trying to replicate
 				// var xunitContext = CreateXunitContext(context.Compilation);
@@ -110,10 +111,10 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 				}
 
 				// We invoke the method to get the XunitContext object
-				object xunitContext = createXunitContext.Invoke(instance, new object[] { context.Compilation });
+				object xunitContext = createXunitContext.Invoke(instance, [ctx.Compilation]);
 
 				// We check if we should analyze the compilation
-				var shouldAnalyzeMethod = instance.GetType()
+				MethodInfo? shouldAnalyzeMethod = instance.GetType()
 					.GetMethod("ShouldAnalyze", BindingFlags.NonPublic | BindingFlags.Instance);
 				if (shouldAnalyzeMethod == null)
 				{
@@ -121,7 +122,7 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 					return;
 				}
 
-				bool shouldAnalyze = (bool)shouldAnalyzeMethod.Invoke(instance, new object[] { xunitContext });
+				bool shouldAnalyze = (bool)shouldAnalyzeMethod.Invoke(instance, [xunitContext]);
 				if (shouldAnalyze)
 				{
 					// Now we replicate the AnalyzeCompilation method code
@@ -144,7 +145,7 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 
 					// We check for our own assert type
 					INamedTypeSymbol? assertMType =
-						context.Compilation.GetTypeByMetadataName("XunitAssertMessages.AssertM");
+						ctx.Compilation.GetTypeByMetadataName("XunitAssertMessages.AssertM");
 					if (assertMType == null)
 					{
 						return;
@@ -162,7 +163,7 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 					// We get the value of the field
 					HashSet<string> targetMethods = (HashSet<string>)targetMethodsField.GetValue(instance);
 
-					context.RegisterOperationAction(context =>
+					ctx.RegisterOperationAction(context =>
 					{
 						if (context.Operation is IInvocationOperation invocationOperation)
 						{
@@ -254,21 +255,21 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 
 	private void AnalyzeCompilation(CompilationStartAnalysisContext context)
 	{
-		context.RegisterOperationAction(this.AnalyzeOperation, OperationKind.Invocation);
+		context.RegisterCompilationEndAction(this.AnalyzeCompilationEnd);
 	}
 
-	private void AnalyzeOperation(OperationAnalysisContext context)
+	private void AnalyzeCompilationEnd(CompilationAnalysisContext context)
 	{
 		if (this.xunitAssembly == null)
 		{
-			context.ReportDiagnostic(Diagnostic.Create(XunitAssertMessagesAnalyzersAnalyzer.DebugOnlyRule,
-				context.Operation.Syntax.GetLocation(), "Xunit.Analyzers assembly not found"));
+			context.ReportDiagnostic(
+				Diagnostic.Create(XunitAssertMessagesAnalyzersAnalyzer.AssertM001MustReferenceXunitAssertRule, null));
 		}
 #if DEBUG
 		if (this.test != null)
 		{
 			context.ReportDiagnostic(Diagnostic.Create(XunitAssertMessagesAnalyzersAnalyzer.DebugOnlyRule,
-				context.Operation.Syntax.GetLocation(), this.test));
+				null, this.test));
 		}
 #endif
 	}

@@ -35,6 +35,7 @@ public class Test
 	[Fact]
 	public void ThisShowsTheAnalyzersAreStillWorking()
 	{
+		// We have referenced the analyzers, so we can see the warnings in the error list.
 		bool test = true;
 
 		// The original call: This generates a xunit2000 warning in the error list.

@@ -28,8 +28,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XunitAssertMessages.Analyze
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XunitAssertMessages.Analyzers.Test", "XunitAssertMessages.Analyzers\XunitAssertMessages.Analyzers.Test\XunitAssertMessages.Analyzers.Test.csproj", "{A76C6A74-B599-41A2-811E-3CE6D9BC15C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XunitAssertMessages.Analyzers.Vsix", "XunitAssertMessages.Analyzers\XunitAssertMessages.Analyzers.Vsix\XunitAssertMessages.Analyzers.Vsix.csproj", "{210C9EE8-4A1B-4F63-8C8C-32058AEDA6BD}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,10 +66,6 @@ Global
 		{A76C6A74-B599-41A2-811E-3CE6D9BC15C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A76C6A74-B599-41A2-811E-3CE6D9BC15C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A76C6A74-B599-41A2-811E-3CE6D9BC15C2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{210C9EE8-4A1B-4F63-8C8C-32058AEDA6BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{210C9EE8-4A1B-4F63-8C8C-32058AEDA6BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{210C9EE8-4A1B-4F63-8C8C-32058AEDA6BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{210C9EE8-4A1B-4F63-8C8C-32058AEDA6BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
