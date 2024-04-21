@@ -20,6 +20,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XunitAssertMessages.Analyzers", "XunitAssertMessages.Analyzers\XunitAssertMessages.Analyzers\XunitAssertMessages.Analyzers.csproj", "{9027D21B-1B5C-4CD2-A476-4A34E94F6A8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XunitAssertMessages.Analyzers.CodeFixes", "XunitAssertMessages.Analyzers\XunitAssertMessages.Analyzers.CodeFixes\XunitAssertMessages.Analyzers.CodeFixes.csproj", "{8FC19139-C8F3-4620-93C1-7BD500386A8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XunitAssertMessages.Analyzers.Package", "XunitAssertMessages.Analyzers\XunitAssertMessages.Analyzers.Package\XunitAssertMessages.Analyzers.Package.csproj", "{8CC11521-6DBC-4121-9D01-E0763A7879A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XunitAssertMessages.Analyzers.Test", "XunitAssertMessages.Analyzers\XunitAssertMessages.Analyzers.Test\XunitAssertMessages.Analyzers.Test.csproj", "{A76C6A74-B599-41A2-811E-3CE6D9BC15C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XunitAssertMessages.Analyzers.Vsix", "XunitAssertMessages.Analyzers\XunitAssertMessages.Analyzers.Vsix\XunitAssertMessages.Analyzers.Vsix.csproj", "{210C9EE8-4A1B-4F63-8C8C-32058AEDA6BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +52,26 @@ Global
 		{971F70FB-8FE0-4532-8F1B-AC0C0C7444C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{971F70FB-8FE0-4532-8F1B-AC0C0C7444C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{971F70FB-8FE0-4532-8F1B-AC0C0C7444C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9027D21B-1B5C-4CD2-A476-4A34E94F6A8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9027D21B-1B5C-4CD2-A476-4A34E94F6A8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9027D21B-1B5C-4CD2-A476-4A34E94F6A8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9027D21B-1B5C-4CD2-A476-4A34E94F6A8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FC19139-C8F3-4620-93C1-7BD500386A8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FC19139-C8F3-4620-93C1-7BD500386A8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FC19139-C8F3-4620-93C1-7BD500386A8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FC19139-C8F3-4620-93C1-7BD500386A8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CC11521-6DBC-4121-9D01-E0763A7879A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CC11521-6DBC-4121-9D01-E0763A7879A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CC11521-6DBC-4121-9D01-E0763A7879A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CC11521-6DBC-4121-9D01-E0763A7879A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A76C6A74-B599-41A2-811E-3CE6D9BC15C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A76C6A74-B599-41A2-811E-3CE6D9BC15C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A76C6A74-B599-41A2-811E-3CE6D9BC15C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A76C6A74-B599-41A2-811E-3CE6D9BC15C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{210C9EE8-4A1B-4F63-8C8C-32058AEDA6BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{210C9EE8-4A1B-4F63-8C8C-32058AEDA6BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{210C9EE8-4A1B-4F63-8C8C-32058AEDA6BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{210C9EE8-4A1B-4F63-8C8C-32058AEDA6BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

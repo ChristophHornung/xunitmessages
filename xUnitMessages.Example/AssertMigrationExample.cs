@@ -31,4 +31,16 @@ public class Test
 		// For interpolated strings use a double curly.
 		Assert.Equal(10, 9, $"{9} is so wrong. {{xMsg}}");
 	}
+
+	[Fact]
+	public void ThisShowsTheAnalyzers()
+	{
+		bool test = true;
+
+		// This generates a xunit2000 warning in the error list.
+		Xunit.Assert.Equal(test, true);
+
+		// This generates a xunit2000 warning in the error list as well.
+		Assert.Equal(test, true, "WithMessage");
+	}
 }
