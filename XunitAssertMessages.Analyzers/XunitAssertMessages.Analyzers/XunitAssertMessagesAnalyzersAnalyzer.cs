@@ -95,8 +95,9 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 				//	AnalyzeCompilation(context, xunitContext);
 
 				// We call the CreateXunitContext method to get the XunitContext object via reflection on the instance
-				// of the AssertUsageAnalyzerBase class
-				var createXunitContext = instance.GetType().GetMethod("CreateXunitContext");
+				// of the AssertUsageAnalyzerBase class, the method is protected, so we have to use reflection
+				var createXunitContext = instance.GetType()
+					.GetMethod("CreateXunitContext", BindingFlags.NonPublic | BindingFlags.Instance);
 				if (createXunitContext == null)
 				{
 					this.test = "CreateXunitContext method not found";
@@ -107,7 +108,8 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 				object xunitContext = createXunitContext.Invoke(instance, new object[] { context.Compilation });
 
 				// We check if we should analyze the compilation
-				var shouldAnalyzeMethod = instance.GetType().GetMethod("ShouldAnalyze");
+				var shouldAnalyzeMethod = instance.GetType()
+					.GetMethod("ShouldAnalyze", BindingFlags.NonPublic | BindingFlags.Instance);
 				if (shouldAnalyzeMethod == null)
 				{
 					this.test = "ShouldAnalyze method not found";
@@ -136,17 +138,19 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 					//}, OperationKind.Invocation);
 
 					// We check for our own assert type
-					INamedTypeSymbol? assertMType = context.Compilation.GetTypeByMetadataName("XunitAssertMessages.AssertM");
+					INamedTypeSymbol? assertMType =
+						context.Compilation.GetTypeByMetadataName("XunitAssertMessages.AssertM");
 					if (assertMType == null)
 					{
 						return;
 					}
 
-					// We get the target methods by getting the private field from the AssertUsageAnalyzerBase class called targetMethods
-					FieldInfo? targetMethodsField = instance.GetType().GetField("targetMethods", BindingFlags.NonPublic | BindingFlags.Instance);
+					// We get the target methods by getting the static private field from the AssertUsageAnalyzerBase class called targetMethods
+					FieldInfo? targetMethodsField = instance.GetType().GetField("targetMethods",
+						BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
 					if (targetMethodsField == null)
 					{
-						this.test = "targetMethods field not found";
+						this.test = $"{instance.GetType().Name}: targetMethods field not found";
 						return;
 					}
 
@@ -158,10 +162,14 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 						if (context.Operation is IInvocationOperation invocationOperation)
 						{
 							var methodSymbol = invocationOperation.TargetMethod;
-							if (methodSymbol.MethodKind != MethodKind.Ordinary || !SymbolEqualityComparer.Default.Equals(methodSymbol.ContainingType, assertMType) || !targetMethods.Contains(methodSymbol.Name))
+							if (methodSymbol.MethodKind != MethodKind.Ordinary ||
+							    !SymbolEqualityComparer.Default.Equals(methodSymbol.ContainingType, assertMType) ||
+							    !targetMethods.Contains(methodSymbol.Name))
+							{
 								return;
+							}
 
-							AnalyzeInvocation(instance, context, xunitContext, invocationOperation, methodSymbol);
+							this.AnalyzeInvocation(instance, context, xunitContext, invocationOperation, methodSymbol);
 						}
 					}, OperationKind.Invocation);
 				}
@@ -169,9 +177,75 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 		}
 	}
 
-	private void AnalyzeInvocation(object instance, OperationAnalysisContext context, object xunitContext, IInvocationOperation invocationOperation, IMethodSymbol methodSymbol)
+	private void AnalyzeInvocation(object instance, OperationAnalysisContext context, object xunitContext,
+		IInvocationOperation invocationOperation, IMethodSymbol methodSymbol)
 	{
-		throw new NotImplementedException();
+		// instance is the AssertUsageAnalyzerBase instance
+		// we replicate the AnalyzeInvocation method code but need to change the context to drop the last parameter
+		// We get the protected AnalyzeInvocation method from the AssertUsageAnalyzerBase class
+		MethodInfo? analyzeInvocationMethod = instance.GetType()
+			.GetMethod("AnalyzeInvocation", BindingFlags.NonPublic | BindingFlags.Instance);
+		if (analyzeInvocationMethod == null)
+		{
+			this.test = "AnalyzeInvocation method not found";
+			return;
+		}
+
+		// We tweak the context to drop the last parameter
+
+		//This is what we want to call, but the constructor is internal, so we again have to use reflection
+		//IInvocationOperation tweakedInvocationOperation = new InvocationOperation(invocationOperation.Syntax,
+		//	invocationOperation.TargetMethod, invocationOperation.Instance,
+		//	invocationOperation.Arguments.RemoveAt(invocationOperation.Arguments.Length - 1),
+		//	invocationOperation.IsImplicit, invocationOperation.Type, invocationOperation.ConstantValue,
+		//	invocationOperation.Language);
+
+		// The type Microsoft.CodeAnalysis.Operations.InvocationOperation itself is internal, so we have to use reflection to get it
+		// Its siangure is  internal InvocationOperation(IMethodSymbol targetMethod, ITypeSymbol? constrainedToType, IOperation? instance,
+		// bool isVirtual, ImmutableArray<IArgumentOperation> arguments, SemanticModel? semanticModel, SyntaxNode syntax, ITypeSymbol? type, bool isImplicit)
+		Assembly operationsAssembly = typeof(IInvocationOperation).Assembly;
+		Type invocationOperationType =
+			operationsAssembly.GetType("Microsoft.CodeAnalysis.Operations.InvocationOperation");
+
+		// We get the constructor of the InvocationOperation class
+		ConstructorInfo? invocationOperationConstructor = invocationOperationType.GetConstructor(
+			BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[]
+			{
+				typeof(IMethodSymbol), typeof(ITypeSymbol), typeof(IOperation), typeof(bool),
+				typeof(ImmutableArray<IArgumentOperation>), typeof(SemanticModel), typeof(SyntaxNode),
+				typeof(ITypeSymbol), typeof(bool)
+			}, null);
+
+		if (invocationOperationConstructor == null)
+		{
+			this.test = "InvocationOperation constructor not found";
+			return;
+		}
+
+		// We create the tweakedInvocationOperation object
+		object tweakedInvocationOperation = invocationOperationConstructor.Invoke(new object[]
+		{
+			invocationOperation.TargetMethod,
+			invocationOperation.ConstrainedToType,
+			invocationOperation.Instance,
+			invocationOperation.IsVirtual,
+			invocationOperation.Arguments.RemoveAt(invocationOperation.Arguments.Length - 1),
+			invocationOperation.SemanticModel,
+			invocationOperation.Syntax,
+			invocationOperation.Type,
+			invocationOperation.IsImplicit
+		});
+
+		// We invoke the method
+		try
+		{
+			analyzeInvocationMethod.Invoke(instance, [context, xunitContext, tweakedInvocationOperation, methodSymbol]);
+		}
+		catch (Exception e)
+		{
+			this.test = e.Message;
+			this.test += e.InnerException?.Message;
+		}
 	}
 
 	private void AnalyzeCompilation(CompilationStartAnalysisContext context)
