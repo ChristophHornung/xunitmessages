@@ -33,14 +33,14 @@ public class Test
 	}
 
 	[Fact]
-	public void ThisShowsTheAnalyzers()
+	public void ThisShowsTheAnalyzersAreStillWorking()
 	{
 		bool test = true;
 
-		// This generates a xunit2000 warning in the error list.
+		// The original call: This generates a xunit2000 warning in the error list.
 		Xunit.Assert.Equal(test, true);
 
-		// This generates a xunit2000 warning in the error list as well.
+		// The AssertM call: This generates a xunit2000 warning in the error list as well.
 		Assert.Equal(test, true, "WithMessage");
 	}
 }

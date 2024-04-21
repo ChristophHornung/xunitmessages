@@ -9,53 +9,60 @@ using Microsoft.CodeAnalysis.Operations;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 {
-	public const string DiagnosticId = "XunitAssertMessagesAnalyzers";
-	private const string Category = "Naming";
+#if DEBUG
+	private static readonly DiagnosticDescriptor DebugOnlyRule = new(
+		"debug001", "Debug Only output",
+		"{0}", "Debug",
+		DiagnosticSeverity.Warning, isEnabledByDefault: true);
+#endif
 
-	// You can change these strings in the Resources.resx file. If you do not want your analyzer to be localize-able, you can use regular strings for Title and MessageFormat.
-	// See https://github.com/dotnet/roslyn/blob/main/docs/analyzers/Localizing%20Analyzers.md for more on localization
-	private static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.AnalyzerTitle),
-		Resources.ResourceManager, typeof(Resources));
-
-	private static readonly LocalizableString MessageFormat =
-		new LocalizableResourceString(nameof(Resources.AnalyzerMessageFormat), Resources.ResourceManager,
-			typeof(Resources));
-
-	private static readonly LocalizableString Description =
-		new LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager,
-			typeof(Resources));
-
-	private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
-		XunitAssertMessagesAnalyzersAnalyzer.DiagnosticId, XunitAssertMessagesAnalyzersAnalyzer.Title,
-		XunitAssertMessagesAnalyzersAnalyzer.MessageFormat, XunitAssertMessagesAnalyzersAnalyzer.Category,
-		DiagnosticSeverity.Warning, isEnabledByDefault: true,
-		description: XunitAssertMessagesAnalyzersAnalyzer.Description);
+	private static readonly DiagnosticDescriptor AssertM001MustReferenceXunitAssertRule = new(
+		"assertM001", "When referencing XunitAssertMessages.Analyzers the Xunit.Analyzers nuget needs to be referenced as well",
+		"Reference the Xunit.Analyzers for XunitAssertMessages.Analyzers to work.", "AssertM",
+		DiagnosticSeverity.Warning, isEnabledByDefault: true);
 
 	private Assembly? xunitAssembly;
 	private string? test;
 	private IList<Type> types = [];
 	private IList<object> instances = [];
+	private readonly IList<DiagnosticDescriptor> inheritedSupportedDiagnostics = [];
 
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
+	public XunitAssertMessagesAnalyzersAnalyzer()
 	{
-		get { return [XunitAssertMessagesAnalyzersAnalyzer.Rule]; }
-	}
-
-	private static void AnalyzeSymbol(SymbolAnalysisContext context)
-	{
-		// TODO: Replace the following code with your own analysis, generating Diagnostic objects for any issues you find
-		var namedTypeSymbol = (INamedTypeSymbol)context.Symbol;
-
-		// Find just those named type symbols with names containing lowercase letters.
-		if (namedTypeSymbol.Name.ToCharArray().Any(char.IsLower))
+		// When initializing the analyzer we get all the DiagnosticDescriptors of xunit.analyzers
+		this.xunitAssembly = AppDomain.CurrentDomain.GetAssemblies()
+			.FirstOrDefault(a => a.FullName.Contains("xunit.analyzers"));
+		// We get the static Xunit.Analyzers.Descriptors class
+		Type? descriptorsType = this.xunitAssembly?.GetType("Xunit.Analyzers.Descriptors");
+		if (descriptorsType != null)
 		{
-			// For all such symbols, produce a diagnostic.
-			var diagnostic = Diagnostic.Create(XunitAssertMessagesAnalyzersAnalyzer.Rule, namedTypeSymbol.Locations[0],
-				namedTypeSymbol.Name);
-
-			context.ReportDiagnostic(diagnostic);
+			// We get all the static fields of the Descriptors class
+			PropertyInfo[] properties = descriptorsType.GetProperties(BindingFlags.Public | BindingFlags.Static);
+			foreach (PropertyInfo property in properties)
+			{
+				// We get the value of the field
+				object? value = property.GetValue(null);
+				if (value is DiagnosticDescriptor descriptor)
+				{
+					// We add the descriptor to the SupportedDiagnostics
+					this.inheritedSupportedDiagnostics.Add(descriptor);
+				}
+			}
+		}
+		else
+		{
+			this.test = "No Descriptors";
 		}
 	}
+
+#if DEBUG
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
+	[
+		XunitAssertMessagesAnalyzersAnalyzer.DebugOnlyRule, ..this.inheritedSupportedDiagnostics
+	];
+#else
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [..this.inheritedSupportedDiagnostics];
+#endif
 
 	public override void Initialize(AnalysisContext context)
 	{
@@ -65,8 +72,6 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 		// Get all loaded assemblies
 		this.xunitAssembly = AppDomain.CurrentDomain.GetAssemblies()
 			.FirstOrDefault(a => a.FullName.Contains("xunit.analyzers"));
-		this.test = string.Join(",", AppDomain.CurrentDomain.GetAssemblies()
-			.Select(a => a.GetName().Name));
 
 		// From the xunit.analyzers assembly, get all classes that inherit from Xunit.Analyzers.AssertUsageAnalyzerBase
 		// First we get the type itself
@@ -146,8 +151,8 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 					}
 
 					// We get the target methods by getting the static private field from the AssertUsageAnalyzerBase class called targetMethods
-					FieldInfo? targetMethodsField = instance.GetType().GetField("targetMethods",
-						BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+					FieldInfo? targetMethodsField = assertUsageAnalyzerType.GetField("targetMethods",
+						BindingFlags.NonPublic | BindingFlags.Instance);
 					if (targetMethodsField == null)
 					{
 						this.test = $"{instance.GetType().Name}: targetMethods field not found";
@@ -155,7 +160,7 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 					}
 
 					// We get the value of the field
-					string[] targetMethods = (string[])targetMethodsField.GetValue(instance);
+					HashSet<string> targetMethods = (HashSet<string>)targetMethodsField.GetValue(instance);
 
 					context.RegisterOperationAction(context =>
 					{
@@ -201,7 +206,7 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 		//	invocationOperation.Language);
 
 		// The type Microsoft.CodeAnalysis.Operations.InvocationOperation itself is internal, so we have to use reflection to get it
-		// Its siangure is  internal InvocationOperation(IMethodSymbol targetMethod, ITypeSymbol? constrainedToType, IOperation? instance,
+		// Its signature is: internal InvocationOperation(IMethodSymbol targetMethod, ITypeSymbol? constrainedToType, IOperation? instance,
 		// bool isVirtual, ImmutableArray<IArgumentOperation> arguments, SemanticModel? semanticModel, SyntaxNode syntax, ITypeSymbol? type, bool isImplicit)
 		Assembly operationsAssembly = typeof(IInvocationOperation).Assembly;
 		Type invocationOperationType =
@@ -223,8 +228,7 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 		}
 
 		// We create the tweakedInvocationOperation object
-		object tweakedInvocationOperation = invocationOperationConstructor.Invoke(new object[]
-		{
+		object tweakedInvocationOperation = invocationOperationConstructor.Invoke([
 			invocationOperation.TargetMethod,
 			invocationOperation.ConstrainedToType,
 			invocationOperation.Instance,
@@ -234,7 +238,7 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 			invocationOperation.Syntax,
 			invocationOperation.Type,
 			invocationOperation.IsImplicit
-		});
+		]);
 
 		// We invoke the method
 		try
@@ -257,14 +261,15 @@ public class XunitAssertMessagesAnalyzersAnalyzer : DiagnosticAnalyzer
 	{
 		if (this.xunitAssembly == null)
 		{
-			context.ReportDiagnostic(Diagnostic.Create(XunitAssertMessagesAnalyzersAnalyzer.Rule,
+			context.ReportDiagnostic(Diagnostic.Create(XunitAssertMessagesAnalyzersAnalyzer.DebugOnlyRule,
 				context.Operation.Syntax.GetLocation(), "Xunit.Analyzers assembly not found"));
 		}
-
+#if DEBUG
 		if (this.test != null)
 		{
-			context.ReportDiagnostic(Diagnostic.Create(XunitAssertMessagesAnalyzersAnalyzer.Rule,
+			context.ReportDiagnostic(Diagnostic.Create(XunitAssertMessagesAnalyzersAnalyzer.DebugOnlyRule,
 				context.Operation.Syntax.GetLocation(), this.test));
 		}
+#endif
 	}
 }
