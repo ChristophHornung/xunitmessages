@@ -6,7 +6,7 @@ using Xunit;
 using Xunit.Sdk;
 
 /// <summary>
-///     The static class containing overloads with a message for all <see cref="Assert" /> methods.
+/// The static class containing overloads with a message for all <see cref="Assert" /> methods.
 /// </summary>
 public static partial class AssertM
 {
