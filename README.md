@@ -16,7 +16,7 @@ using Assert = XunitAssertMessages.AssertM;
 ```
 
 to your usings. (For an example see the `xUnitMessages.Example` project.)
-All aserts will work identical to before but will now have an _optional_ additional 
+All asserts will work identical to before but will now have an _optional_ additional 
 parameter that adds a custom message. E.g.
 
 ``` csharp
@@ -31,7 +31,7 @@ Xunit.Sdk.XunitException
 The shipping delay is incorrectly configured.
 ```
 
-You can includ the original message from xUnit via `{xMsg}`
+You can include the original message from xUnit via `{xMsg}`
 
 Example:
 ``` csharp
@@ -44,7 +44,7 @@ Assert.Equal(10, 9, $"{9} is so wrong. {{xMsg}}");
 ```
 
 ## Motivation
-When working with tools like SpecFlow or other behaviour driven frameworks the result of a test
+When working with tools like SpecFlow or other behavior driven frameworks the result of a test
 is often not read by a programmer but by domain experts. In that scenario an error message like
 ```
 The vat was calculated incorrectly, the test expects 24.40$ but the calculated value is 34.40$
