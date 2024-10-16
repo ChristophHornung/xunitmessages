@@ -5,10 +5,12 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 
+#pragma warning disable RS1035 // Do not use banned APIs for analyzers
+
 [Generator]
 public class MessageExtensionGenerator : ISourceGenerator
 {
-	private static readonly DiagnosticDescriptor generationWarning = new DiagnosticDescriptor(
+	private static readonly DiagnosticDescriptor generationWarning = new(
 		id: "XUNITMGEN001",
 		title: "Exception on generation",
 		messageFormat: "Exception '{0}' {1}",
@@ -17,7 +19,7 @@ public class MessageExtensionGenerator : ISourceGenerator
 		isEnabledByDefault: true);
 
 #if DEBUG
-	private static readonly DiagnosticDescriptor logInfo = new DiagnosticDescriptor(
+	private static readonly DiagnosticDescriptor logInfo = new(
 		id: "XUNITMGENLOG",
 		title: "Log",
 		messageFormat: "{0}",
