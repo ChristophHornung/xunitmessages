@@ -339,7 +339,7 @@ public class AssertMessageAsserts
 	public void EqualUsesMessage12()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Equal(new List<string>() { "A" }, new List<string> { "A" },
+			AssertM.Equal(new List<string> { "A" }, new List<string> { "A" },
 				new Func<string, string, bool>((_, _) => false), "Message"));
 	}
 

@@ -138,7 +138,7 @@ public static partial class AssertM
 
 	private string ToInheritdocComment(string documentationCommentId)
 	{
-		return documentationCommentId!
+		return documentationCommentId
 			.Replace("M:", "")
 			.Replace("``1(", "{T}(")
 			.Replace("``2(", "{T,TValue}(")
@@ -305,12 +305,7 @@ public static partial class AssertM
 
 	private bool CanCopyAttribute(AttributeData arg)
 	{
-		if (arg.AttributeClass!.ToDisplayString() == "System.Runtime.CompilerServices.NullableAttribute")
-		{
-			return false;
-		}
-
-		return true;
+		return arg.AttributeClass!.ToDisplayString() != "System.Runtime.CompilerServices.NullableAttribute";
 	}
 
 	private void BuildCall(StringBuilder sourceBuilder, IMethodSymbol member)
