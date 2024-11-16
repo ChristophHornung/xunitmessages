@@ -35,28 +35,28 @@ public class AssertMessageAsserts
 	public async Task AllAsyncUsesMessage()
 	{
 		await AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.AllAsync(new[] { "T" }, _ => Task.FromException(new Exception()), "Message"));
+			AssertM.AllAsync(["T"], _ => Task.FromException(new Exception()), "Message"));
 	}
 
 	[Fact]
 	public async Task AllAsyncUsesMessage2()
 	{
 		await AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.AllAsync(new[] { "T" }, (_, _) => Task.FromException(new Exception()), "Message"));
+			AssertM.AllAsync(["T"], (_, _) => Task.FromException(new Exception()), "Message"));
 	}
 
 	[Fact]
 	public void AllUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.All(new[] { "T" }, (_, _) => throw new Exception(), "Message"));
+			AssertM.All(["T"], (_, _) => throw new Exception(), "Message"));
 	}
 
 	[Fact]
 	public void AllUsesMessage2()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.All(new[] { "T" }, _ => throw new Exception(), "Message"));
+			AssertM.All(["T"], _ => throw new Exception(), "Message"));
 	}
 
 	[Fact]
@@ -69,21 +69,21 @@ public class AssertMessageAsserts
 	public async Task CollectionAsyncUsesMessage()
 	{
 		await AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.CollectionAsync(new[] { "T" }, [_ => Task.FromException(new Exception())], "Message"));
+			AssertM.CollectionAsync(["T"], [_ => Task.FromException(new Exception())], "Message"));
 	}
 
 	[Fact]
 	public void CollectionUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Collection(new[] { "T" }, Array.Empty<Action<string>>(), "Message"));
+			AssertM.Collection(["T"], [], "Message"));
 	}
 
 	[Fact]
 	public void ContainsUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Contains(new[] { "T" }, _ => false, "Message"));
+			AssertM.Contains(["T"], _ => false, "Message"));
 	}
 
 	[Fact]
@@ -147,7 +147,7 @@ public class AssertMessageAsserts
 	public void ContainsUsesMessage6()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Contains("A", new[] { "B" }, StringComparer.InvariantCultureIgnoreCase, "Message"));
+			AssertM.Contains("A", ["B"], StringComparer.InvariantCultureIgnoreCase, "Message"));
 	}
 
 	[Fact]
@@ -177,13 +177,13 @@ public class AssertMessageAsserts
 	public void DistinctUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Distinct(new[] { "A", "A" }, StringComparer.InvariantCultureIgnoreCase, "Message"));
+			AssertM.Distinct(["A", "A"], StringComparer.InvariantCultureIgnoreCase, "Message"));
 	}
 
 	[Fact]
 	public void DistinctUsesMessage2()
 	{
-		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.Distinct(new[] { "A", "A" }, "Message"));
+		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.Distinct(["A", "A"], "Message"));
 	}
 
 	[Fact]
@@ -213,7 +213,7 @@ public class AssertMessageAsserts
 	[Fact]
 	public void DoesNotContainUsesMessage()
 	{
-		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.DoesNotContain(new[] { "B" }, _ => true, "Message"));
+		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.DoesNotContain(["B"], _ => true, "Message"));
 	}
 
 	[Fact]
@@ -226,7 +226,7 @@ public class AssertMessageAsserts
 	public void DoesNotContainUsesMessage3()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.DoesNotContain("B", new[] { "B" }, StringComparer.InvariantCultureIgnoreCase, "Message"));
+			AssertM.DoesNotContain("B", ["B"], StringComparer.InvariantCultureIgnoreCase, "Message"));
 	}
 
 	[Fact]
@@ -544,7 +544,7 @@ public class AssertMessageAsserts
 
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Multiple(new Action[] { () => Assert.False(true) }, "Message"));
+			AssertM.Multiple([() => Assert.False(true)], "Message"));
 	}
 
 	[Fact]
@@ -593,7 +593,7 @@ public class AssertMessageAsserts
 	public void NotEqualUsesMessage2()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.NotEqual(new string[] { }, new string[] { }, StringComparer.OrdinalIgnoreCase, "Message"));
+			AssertM.NotEqual([], [], StringComparer.OrdinalIgnoreCase, "Message"));
 	}
 
 	[Fact]

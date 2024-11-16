@@ -2,7 +2,7 @@
 
 using Xunit;
 
-// Alias the assert to quickly migrate existing code to use AssertM.
+// Alias the Assert class to quickly migrate existing code to use AssertM.
 using Assert = XunitAssertMessages.AssertM;
 
 public class Test
