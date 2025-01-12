@@ -1,10 +1,15 @@
 # xunit.AssertMessages
-[![NuGet version (Xunit.AssertMessages)](https://img.shields.io/nuget/v/Xunit.AssertMessages.svg?style=flat-square)](https://www.nuget.org/packages/Xunit.AssertMessages/)
+
+|Version|Nuget|
+|---|---|
+|for xunit v2|[![NuGet version (Xunit.AssertMessages)](https://img.shields.io/nuget/v/Xunit.AssertMessages.svg?style=flat-square)](https://www.nuget.org/packages/Xunit.AssertMessages/)
+|for xunit v3|[![NuGet version (Xunit.v3.AssertMessages)](https://img.shields.io/nuget/v/Xunit.v3.AssertMessages.svg?style=flat-square)](https://www.nuget.org/packages/Xunit.v3.AssertMessages/)
 
 Adds assert messages to all xunit `Assert` calls.
 
 ## Usage
-Get the nuget package [here](https://www.nuget.org/packages/Xunit.AssertMessages).
+Get the nuget package [here for v2](https://www.nuget.org/packages/Xunit.AssertMessages)
+or [here for v3](https://www.nuget.org/packages/Xunit.v3.AssertMessages).
 
 All methods are static on the `AssertM` class.
 

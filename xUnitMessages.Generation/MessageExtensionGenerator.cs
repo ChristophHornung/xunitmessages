@@ -47,7 +47,7 @@ public static partial class AssertM
 			sourceBuilder.AppendLine();
 
 			IAssemblySymbol xUnitRef =
-				context.Compilation.SourceModule.ReferencedAssemblySymbols.First(r => r.Name == "xunit.assert");
+				context.Compilation.SourceModule.ReferencedAssemblySymbols.First(r => r.Name == "xunit.v3.assert");
 
 			INamespaceSymbol xUnitNamespace =
 				xUnitRef.GlobalNamespace.GetNamespaceMembers().Single(s => s.Name == "Xunit");
@@ -245,7 +245,36 @@ public static partial class AssertM
 				first = true;
 				methodSignatureBuilder.Append(typeParameter.ToDisplayString());
 				methodSignatureBuilder.Append(": ");
-				foreach (var constraint in typeParameter.ConstraintTypes)
+
+				if (typeParameter.HasUnmanagedTypeConstraint)
+				{
+					if (first)
+					{
+						first = false;
+					}
+					else
+					{
+						methodSignatureBuilder.Append(", ");
+					}
+
+					methodSignatureBuilder.Append("unmanaged");
+				}
+
+				if (typeParameter.HasValueTypeConstraint && !typeParameter.HasUnmanagedTypeConstraint)
+				{
+					if (first)
+					{
+						first = false;
+					}
+					else
+					{
+						methodSignatureBuilder.Append(", ");
+					}
+
+					methodSignatureBuilder.Append("struct");
+				}
+
+				foreach (ITypeSymbol? constraint in typeParameter.ConstraintTypes)
 				{
 					if (first)
 					{
@@ -273,19 +302,6 @@ public static partial class AssertM
 					methodSignatureBuilder.Append("notnull");
 				}
 
-				if (typeParameter.HasValueTypeConstraint)
-				{
-					if (first)
-					{
-						first = false;
-					}
-					else
-					{
-						methodSignatureBuilder.Append(", ");
-					}
-
-					methodSignatureBuilder.Append("struct");
-				}
 			}
 		}
 
@@ -332,9 +348,20 @@ public static partial class AssertM
 			{
 				callBuilder.Append("WithMessageAsync(userMessage, async () => await ");
 			}
-			else
+			else if (!this.HasRefLikeTypeParameter(member))
 			{
 				callBuilder.Append("WithMessage(userMessage, () => ");
+			}
+			else
+			{
+				// Since we can't use the WithMessage method with ref-like types, we need to inline the WithMessage method.
+				callBuilder.Append(
+					"""
+					try
+							{
+								
+					"""
+				);
 			}
 		}
 
@@ -354,7 +381,7 @@ public static partial class AssertM
 			callBuilder.Append(MessageExtensionGenerator.EscapeParameterName(parameter.Name));
 		}
 
-		if (MessageExtensionGenerator.HasNoMessage(member))
+		if (MessageExtensionGenerator.HasNoMessage(member) && !HasRefLikeTypeParameter(member))
 		{
 			callBuilder.Append(")");
 		}
@@ -362,8 +389,26 @@ public static partial class AssertM
 		callBuilder.Append(");");
 		callBuilder.AppendLine();
 
+		if (MessageExtensionGenerator.HasNoMessage(member) && HasRefLikeTypeParameter(member))
+		{
+			callBuilder.Append(
+				"""
+						}
+						catch (Xunit.Sdk.XunitException xException)
+						{
+							throw WrapException(userMessage, xException);
+						}
+				"""
+			);
+		}
+
 		//this.Log(context, callBuilder.ToString());
 		sourceBuilder.Append(callBuilder);
+	}
+
+	private bool HasRefLikeTypeParameter(IMethodSymbol member)
+	{
+		return member.Parameters.ToList().Any(t => t.Type.IsRefLikeType);
 	}
 
 	private bool IsTask(ITypeSymbol memberReturnType)

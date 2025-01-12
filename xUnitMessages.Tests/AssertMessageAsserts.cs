@@ -1,7 +1,9 @@
 ﻿namespace XunitMessages.Tests;
 
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -62,7 +64,7 @@ public class AssertMessageAsserts
 	[Fact]
 	public void AssertEmptyUsesMessage()
 	{
-		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.Empty(new[] { "T" }, "Message"));
+		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.Empty(new[] {"T"}, "Message"));
 	}
 
 	[Fact]
@@ -116,17 +118,279 @@ public class AssertMessageAsserts
 	}
 
 	[Fact]
+	public void ContainsUsesMessage14()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains(12, new Dictionary<int, string> {{1, "A"}}.ToImmutableDictionary(), "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage15()
+	{
+		Memory<byte> memory = new byte[] {0x0};
+		Memory<byte> memory2 = new byte[] {0x1};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage16()
+	{
+		ReadOnlyMemory<byte> memory = new byte[] {0x0};
+		Memory<byte> memory2 = new byte[] {0x1};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage17()
+	{
+		Memory<byte> memory = new byte[] {0x0};
+		ReadOnlyMemory<byte> memory2 = new byte[] {0x1};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage18()
+	{
+		ReadOnlyMemory<byte> memory = new byte[] {0x0};
+		ReadOnlyMemory<byte> memory2 = new byte[] {0x1};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage19()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains(12, new HashSet<int> {{1}}.ToImmutableHashSet(), "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage20()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains(12, new HashSet<int> {{1}}.ToImmutableSortedSet(), "Message"));
+	}
+
+
+	[Fact]
+	public void ContainsUsesMessage21()
+	{
+		Memory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage22()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage23()
+	{
+		Memory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage24()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage25()
+	{
+		Memory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains(memory, memory2, StringComparison.InvariantCulture, "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage26()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains(memory, memory2, StringComparison.InvariantCulture, "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage27()
+	{
+		Memory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains(memory, memory2, StringComparison.InvariantCulture, "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage28()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Contains(memory, memory2, StringComparison.InvariantCulture, "Message"));
+	}
+
+	[Fact]
+	public void ContainsUsesMessage29()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<byte> span = new byte[] {0x0};
+			Span<byte> span2 = new byte[] {0x1};
+			AssertM.Contains(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void ContainsUsesMessage30()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<byte> span = new byte[] {0x0};
+			Span<byte> span2 = new byte[] {0x1};
+			AssertM.Contains(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void ContainsUsesMessage31()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<byte> span = new byte[] {0x0};
+			ReadOnlySpan<byte> span2 = new byte[] {0x1};
+			AssertM.Contains(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void ContainsUsesMessage32()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<byte> span = new byte[] {0x0};
+			ReadOnlySpan<byte> span2 = new byte[] {0x1};
+			AssertM.Contains(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void ContainsUsesMessage33()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = ['a'];
+			Span<char> span2 = ['b'];
+			AssertM.Contains(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void ContainsUsesMessage34()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = ['a'];
+			ReadOnlySpan<char> span2 = ['b'];
+			AssertM.Contains(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void ContainsUsesMessage35()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = ['a'];
+			Span<char> span2 = ['b'];
+			AssertM.Contains(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void ContainsUsesMessage36()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = ['a'];
+			ReadOnlySpan<char> span2 = ['b'];
+			AssertM.Contains(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void ContainsUsesMessage37()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = ['a'];
+			Span<char> span2 = ['b'];
+			AssertM.Contains(span, span2, StringComparison.InvariantCultureIgnoreCase, "Message");
+		});
+	}
+
+	[Fact]
+	public void ContainsUsesMessage38()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = ['a'];
+			ReadOnlySpan<char> span2 = ['b'];
+			AssertM.Contains(span, span2, StringComparison.InvariantCultureIgnoreCase, "Message");
+		});
+	}
+
+	[Fact]
+	public void ContainsUsesMessage39()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = ['a'];
+			Span<char> span2 = ['b'];
+			AssertM.Contains(span, span2, StringComparison.InvariantCultureIgnoreCase, "Message");
+		});
+	}
+
+	[Fact]
+	public void ContainsUsesMessage40()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = ['a'];
+			ReadOnlySpan<char> span2 = ['b'];
+			AssertM.Contains(span, span2, StringComparison.InvariantCultureIgnoreCase, "Message");
+		});
+	}
+
+	[Fact]
 	public void ContainsUsesMessage2()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Contains(12, (IDictionary<int, string>)new Dictionary<int, string> { { 1, "A" } }, "Message"));
+			AssertM.Contains(12, (IDictionary<int, string>)new Dictionary<int, string> {{1, "A"}}, "Message"));
 	}
 
 	[Fact]
 	public void ContainsUsesMessage3()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Contains(12, (IReadOnlyDictionary<int, string>)new Dictionary<int, string> { { 1, "A" } },
+			AssertM.Contains(12, (IReadOnlyDictionary<int, string>)new Dictionary<int, string> {{1, "A"}},
 				"Message"));
 	}
 
@@ -140,7 +404,7 @@ public class AssertMessageAsserts
 	public void ContainsUsesMessage5()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Contains(12, new[] { 1 }, "Message"));
+			AssertM.Contains(12, new[] {1}, "Message"));
 	}
 
 	[Fact]
@@ -211,6 +475,15 @@ public class AssertMessageAsserts
 	}
 
 	[Fact]
+	public void DoesNotContain7()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain("A",
+				new ConcurrentDictionary<string, string>([new KeyValuePair<string, string>("A", "A")])
+					.ToImmutableDictionary(), "Message"));
+	}
+
+	[Fact]
 	public void DoesNotContainUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.DoesNotContain(["B"], _ => true, "Message"));
@@ -219,7 +492,7 @@ public class AssertMessageAsserts
 	[Fact]
 	public void DoesNotContainUsesMessage2()
 	{
-		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.DoesNotContain("B", new[] { "B" }, "Message"));
+		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.DoesNotContain("B", new[] {"B"}, "Message"));
 	}
 
 	[Fact]
@@ -233,7 +506,7 @@ public class AssertMessageAsserts
 	public void DoesNotContainUsesMessage4()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.DoesNotContain("B",
-			(IDictionary<string, string>)new Dictionary<string, string> { { "B", "Z" } }, "Message"));
+			(IDictionary<string, string>)new Dictionary<string, string> {{"B", "Z"}}, "Message"));
 	}
 
 	[Fact]
@@ -253,7 +526,261 @@ public class AssertMessageAsserts
 	public void DoesNotContainUsesMessage7()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.DoesNotContain("A",
-			(IReadOnlyDictionary<string, string>)new Dictionary<string, string> { { "A", "Z" } }, "Message"));
+			(IReadOnlyDictionary<string, string>)new Dictionary<string, string> {{"A", "Z"}}, "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage8()
+	{
+		Memory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'a'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage9()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'a'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage10()
+	{
+		Memory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'a'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage11()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'a'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage12()
+	{
+		Memory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'a'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain(memory, memory2, StringComparison.InvariantCulture, "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage13()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'a'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain(memory, memory2, StringComparison.InvariantCulture, "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage14()
+	{
+		Memory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'a'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain(memory, memory2, StringComparison.InvariantCulture, "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage15()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'a'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain(memory, memory2, StringComparison.InvariantCulture, "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage16()
+	{
+		Memory<byte> memory = new byte[] {0x0};
+		Memory<byte> memory2 = new byte[] {0x0};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage17()
+	{
+		ReadOnlyMemory<byte> memory = memory = new byte[] {0x0};
+		Memory<byte> memory2 = new byte[] {0x0};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage18()
+	{
+		Memory<byte> memory = memory = new byte[] {0x0};
+		ReadOnlyMemory<byte> memory2 = new byte[] {0x0};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage19()
+	{
+		ReadOnlyMemory<byte> memory = memory = new byte[] {0x0};
+		ReadOnlyMemory<byte> memory2 = new byte[] {0x0};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.DoesNotContain(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage20()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.DoesNotContain("A",
+			new HashSet<string>() {"A"}.ToImmutableHashSet(), "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage21()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.DoesNotContain("A",
+			new HashSet<string>() {"A"}.ToImmutableSortedSet(), "Message"));
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage22()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<byte> span = new byte[] {0x0};
+			Span<byte> span2 = new byte[] {0x0};
+			AssertM.DoesNotContain(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage23()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<byte> span = new byte[] {0x0};
+			Span<byte> span2 = new byte[] {0x0};
+			AssertM.DoesNotContain(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage24()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<byte> span = new byte[] {0x0};
+			ReadOnlySpan<byte> span2 = new byte[] {0x0};
+			AssertM.DoesNotContain(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage25()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<byte> span = new byte[] {0x0};
+			ReadOnlySpan<byte> span2 = new byte[] {0x0};
+			AssertM.DoesNotContain(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage26()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = ['a'];
+			Span<char> span2 = ['a'];
+			AssertM.DoesNotContain(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage27()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = ['a'];
+			ReadOnlySpan<char> span2 = ['a'];
+			AssertM.DoesNotContain(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage28()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = ['a'];
+			Span<char> span2 = ['a'];
+			AssertM.DoesNotContain(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage29()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = ['a'];
+			ReadOnlySpan<char> span2 = ['a'];
+			AssertM.DoesNotContain(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage30()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = ['a'];
+			Span<char> span2 = ['a'];
+			AssertM.DoesNotContain(span, span2, StringComparison.InvariantCultureIgnoreCase, "Message");
+		});
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage31()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = ['a'];
+			ReadOnlySpan<char> span2 = ['a'];
+			AssertM.DoesNotContain(span, span2, StringComparison.InvariantCultureIgnoreCase, "Message");
+		});
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage32()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = ['a'];
+			Span<char> span2 = ['a'];
+			AssertM.DoesNotContain(span, span2, StringComparison.InvariantCultureIgnoreCase, "Message");
+		});
+	}
+
+	[Fact]
+	public void DoesNotContainUsesMessage33()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = ['a'];
+			ReadOnlySpan<char> span2 = ['a'];
+			AssertM.DoesNotContain(span, span2, StringComparison.InvariantCultureIgnoreCase, "Message");
+		});
 	}
 
 	[Fact]
@@ -292,7 +819,7 @@ public class AssertMessageAsserts
 	[Fact]
 	public void EmptyUsesMessage()
 	{
-		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.Empty(new[] { "A" }, "Message"));
+		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.Empty(new[] {"A"}, "Message"));
 	}
 
 	[Fact]
@@ -315,10 +842,170 @@ public class AssertMessageAsserts
 	}
 
 	[Fact]
+	public void EndsWithUsesMessage3()
+	{
+		Memory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.EndsWith(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void EndsWithUsesMessage4()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.EndsWith(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void EndsWithUsesMessage5()
+	{
+		Memory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.EndsWith(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void EndsWithUsesMessage6()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.EndsWith(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void EndsWithUsesMessage7()
+	{
+		Memory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.EndsWith(memory, memory2, StringComparison.InvariantCulture, "Message"));
+	}
+
+	[Fact]
+	public void EndsWithUsesMessage8()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.EndsWith(memory, memory2, StringComparison.InvariantCulture, "Message"));
+	}
+
+	[Fact]
+	public void EndsWithUsesMessage9()
+	{
+		Memory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.EndsWith(memory, memory2, StringComparison.InvariantCulture, "Message"));
+	}
+
+	[Fact]
+	public void EndsWithUsesMessage10()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.EndsWith(memory, memory2, StringComparison.InvariantCulture, "Message"));
+	}
+
+	[Fact]
+	public void EndsWithUsesMessage11()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = new char[] {'a'};
+			Span<char> span2 = new char[] {'b'};
+			AssertM.EndsWith(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void EndsWithUsesMessage12()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = new char[] {'a'};
+			ReadOnlySpan<char> span2 = new char[] {'b'};
+			AssertM.EndsWith(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void EndsWithUsesMessage13()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = new char[] {'a'};
+			Span<char> span2 = new char[] {'b'};
+			AssertM.EndsWith(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void EndsWithUsesMessage14()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = new char[] {'a'};
+			ReadOnlySpan<char> span2 = new char[] {'b'};
+			AssertM.EndsWith(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void EndsWithUsesMessage15()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = new char[] {'a'};
+			Span<char> span2 = new char[] {'b'};
+			AssertM.EndsWith(span, span2, StringComparison.InvariantCultureIgnoreCase, "Message");
+		});
+	}
+
+	[Fact]
+	public void EndsWithUsesMessage16()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = new char[] {'a'};
+			ReadOnlySpan<char> span2 = new char[] {'b'};
+			AssertM.EndsWith(span, span2, StringComparison.InvariantCultureIgnoreCase, "Message");
+		});
+	}
+
+	[Fact]
+	public void EndsWithUsesMessage17()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = new char[] {'a'};
+			Span<char> span2 = new char[] {'b'};
+			AssertM.EndsWith(span, span2, StringComparison.InvariantCultureIgnoreCase, "Message");
+		});
+	}
+
+	[Fact]
+	public void EndsWithUsesMessage18()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = new char[] {'a'};
+			ReadOnlySpan<char> span2 = new char[] {'b'};
+			AssertM.EndsWith(span, span2, StringComparison.InvariantCultureIgnoreCase, "Message");
+		});
+	}
+
+	[Fact]
 	public void EqualUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Equal((IEnumerable<string>)new List<string>(), new List<string> { "A" }, "Message"));
+			AssertM.Equal((IEnumerable<string>)new List<string>(), new List<string> {"A"}, "Message"));
 	}
 
 	[Fact]
@@ -332,14 +1019,14 @@ public class AssertMessageAsserts
 	public void EqualUsesMessage11()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Equal(new List<string>(), new List<string> { "A" }, StringComparer.OrdinalIgnoreCase, "Message"));
+			AssertM.Equal(new List<string>(), new List<string> {"A"}, StringComparer.OrdinalIgnoreCase, "Message"));
 	}
 
 	[Fact]
 	public void EqualUsesMessage12()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Equal(new List<string> { "A" }, new List<string> { "A" },
+			AssertM.Equal(new List<string> {"A"}, new List<string> {"A"},
 				new Func<string, string, bool>((_, _) => false), "Message"));
 	}
 
@@ -390,6 +1077,312 @@ public class AssertMessageAsserts
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
 			AssertM.Equal(DateTimeOffset.Now, DateTimeOffset.Now.AddHours(1), TimeSpan.FromMinutes(59), "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage20()
+	{
+		Memory<byte> memory = new byte[] {0x0};
+		Memory<byte> memory2 = new byte[] {0x1};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage21()
+	{
+		Memory<byte> memory = new byte[] {0x0};
+		ReadOnlyMemory<byte> memory2 = new byte[] {0x1};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage22()
+	{
+		ReadOnlyMemory<byte> memory = new byte[] {0x0};
+		Memory<byte> memory2 = new byte[] {0x1};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage23()
+	{
+		ReadOnlyMemory<byte> memory = new byte[] {0x0};
+		ReadOnlyMemory<byte> memory2 = new byte[] {0x1};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage24()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage25()
+	{
+		Memory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage26()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage27()
+	{
+		Memory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage28()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(memory, memory2, true, true, true, true, "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage29()
+	{
+		Memory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(memory, memory2, true, true, true, true, "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage30()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(memory, memory2, true, true, true, true, "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage31()
+	{
+		Memory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Equal(memory, memory2, true, true, true, true, "Message"));
+	}
+
+	[Fact]
+	public void EqualUsesMessage32()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = new char[] {'a'};
+			Span<char> span2 = new char[] {'b'};
+			AssertM.Equal<char>(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void EqualUsesMessage33()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = new char[] {'a'};
+			Span<char> span2 = new char[] {'b'};
+			AssertM.Equal<char>(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void EqualUsesMessage34()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = new char[] {'a'};
+			ReadOnlySpan<char> span2 = new char[] {'b'};
+			AssertM.Equal<char>(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void EqualUsesMessage35()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<byte> span = new byte[] {0x0};
+			Span<byte> span2 = new byte[] {0x1};
+			AssertM.Equal(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void EqualUsesMessage36()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<byte> span = new byte[] {0x0};
+			ReadOnlySpan<byte> span2 = new byte[] {0x1};
+			AssertM.Equal(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void EqualUsesMessage37()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<byte> span = new byte[] {0x0};
+			Span<byte> span2 = new byte[] {0x1};
+			AssertM.Equal(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void EqualUsesMessage38()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<byte> span = new byte[] {0x0};
+			byte[] span2 = new byte[] {0x1};
+			AssertM.Equal(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void EqualUsesMessage39()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<byte> span = new byte[] {0x0};
+			ReadOnlySpan<byte> span2 = new byte[] {0x1};
+			AssertM.Equal(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void EqualUsesMessage40()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = new char[] {'a'};
+			ReadOnlySpan<char> span2 = new char[] {'b'};
+			AssertM.Equal(span, span2, true, true, true, true, "Message");
+		});
+	}
+
+	[Fact]
+	public void EqualUsesMessage41()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = new char[] {'a'};
+			Span<char> span2 = new char[] {'b'};
+			AssertM.Equal(span, span2, true, true, true, true, "Message");
+		});
+	}
+
+	[Fact]
+	public void EqualUsesMessage42()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = new char[] {'a'};
+			ReadOnlySpan<char> span2 = new char[] {'b'};
+			AssertM.Equal(span, span2, true, true, true, true, "Message");
+		});
+	}
+
+	[Fact]
+	public void EqualUsesMessage43()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = new char[] {'a'};
+			Span<char> span2 = new char[] {'b'};
+			AssertM.Equal(span, span2, true, true, true, true, "Message");
+		});
+	}
+
+	[Fact]
+	public void EqualUsesMessage44()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = new char[] {'a'};
+			ReadOnlySpan<char> span2 = new char[] {'b'};
+			AssertM.Equal(span, span2, true, true, true, true, "Message");
+		});
+	}
+
+	[Fact]
+	public void EqualUsesMessage45()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = new char[] {'a'};
+			Span<char> span2 = new char[] {'b'};
+			AssertM.Equal(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void EqualUsesMessage46()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = new char[] {'a'};
+			ReadOnlySpan<char> span2 = new char[] {'b'};
+			AssertM.Equal(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void EqualUsesMessage47()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = new char[] {'a'};
+			Span<char> span2 = new char[] {'b'};
+			AssertM.Equal(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void EqualUsesMessage48()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = new char[] {'a'};
+			ReadOnlySpan<char> span2 = new char[] {'b'};
+			AssertM.Equal(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void EqualUsesMessage49()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = new char[] {'a'};
+			Span<char> span2 = new char[] {'b'};
+			AssertM.Equal(span, span2, "Message");
+		});
 	}
 
 	[Fact]
@@ -512,6 +1505,20 @@ public class AssertMessageAsserts
 	}
 
 	[Fact]
+	public void IsNotTypeUsesMessage3()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.IsNotType<string>("A", true, "Message"));
+	}
+
+	[Fact]
+	public void IsNotTypeUsesMessage4()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.IsNotType(typeof(string), "A", true, "Message"));
+	}
+
+	[Fact]
 	public void IsTypeUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
@@ -523,6 +1530,20 @@ public class AssertMessageAsserts
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
 			AssertM.IsType<int>("A", "Message"));
+	}
+
+	[Fact]
+	public void IsTypeUsesMessage3()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.IsType<int>("A", true, "Message"));
+	}
+
+	[Fact]
+	public void IsTypeUsesMessage4()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.IsType(typeof(int), "A", true, "Message"));
 	}
 
 	[Fact]
@@ -721,14 +1742,14 @@ public class AssertMessageAsserts
 	public void ProperSubsetUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.ProperSubset(new HashSet<string> { "A" }, new HashSet<string> { "B" }, "Message"));
+			AssertM.ProperSubset(new HashSet<string> {"A"}, new HashSet<string> {"B"}, "Message"));
 	}
 
 	[Fact]
 	public void ProperSupersetUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.ProperSuperset(new HashSet<string> { "A" }, new HashSet<string> { "B" }, "Message"));
+			AssertM.ProperSuperset(new HashSet<string> {"A"}, new HashSet<string> {"B"}, "Message"));
 	}
 
 	[Fact]
@@ -901,6 +1922,166 @@ public class AssertMessageAsserts
 	}
 
 	[Fact]
+	public void StartsWithUsesMessage3()
+	{
+		Memory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.StartsWith(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void StartsWithUsesMessage4()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.StartsWith(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void StartsWithUsesMessage5()
+	{
+		Memory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.StartsWith(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void StartsWithUsesMessage6()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.StartsWith(memory, memory2, "Message"));
+	}
+
+	[Fact]
+	public void StartsWithUsesMessage7()
+	{
+		Memory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.StartsWith(memory, memory2, StringComparison.InvariantCulture, "Message"));
+	}
+
+	[Fact]
+	public void StartsWithUsesMessage8()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		Memory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.StartsWith(memory, memory2, StringComparison.InvariantCulture, "Message"));
+	}
+
+	[Fact]
+	public void StartsWithUsesMessage9()
+	{
+		Memory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.StartsWith(memory, memory2, StringComparison.InvariantCulture, "Message"));
+	}
+
+	[Fact]
+	public void StartsWithUsesMessage10()
+	{
+		ReadOnlyMemory<char> memory = new char[] {'a'};
+		ReadOnlyMemory<char> memory2 = new char[] {'b'};
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.StartsWith(memory, memory2, StringComparison.InvariantCulture, "Message"));
+	}
+
+	[Fact]
+	public void StartsWithUsesMessage11()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = new char[] {'a'};
+			Span<char> span2 = new char[] {'b'};
+			AssertM.StartsWith(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void StartsWithUsesMessage12()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = new char[] {'a'};
+			ReadOnlySpan<char> span2 = new char[] {'b'};
+			AssertM.StartsWith(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void StartsWithUsesMessage13()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = new char[] {'a'};
+			Span<char> span2 = new char[] {'b'};
+			AssertM.StartsWith(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void StartsWithUsesMessage14()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = new char[] {'a'};
+			ReadOnlySpan<char> span2 = new char[] {'b'};
+			AssertM.StartsWith(span, span2, "Message");
+		});
+	}
+
+	[Fact]
+	public void StartsWithUsesMessage15()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = new char[] {'a'};
+			Span<char> span2 = new char[] {'b'};
+			AssertM.StartsWith(span, span2, StringComparison.InvariantCultureIgnoreCase, "Message");
+		});
+	}
+
+	[Fact]
+	public void StartsWithUsesMessage16()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			Span<char> span = new char[] {'a'};
+			ReadOnlySpan<char> span2 = new char[] {'b'};
+			AssertM.StartsWith(span, span2, StringComparison.InvariantCultureIgnoreCase, "Message");
+		});
+	}
+
+	[Fact]
+	public void StartsWithUsesMessage17()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = new char[] {'a'};
+			Span<char> span2 = new char[] {'b'};
+			AssertM.StartsWith(span, span2, StringComparison.InvariantCultureIgnoreCase, "Message");
+		});
+	}
+
+	[Fact]
+	public void StartsWithUsesMessage18()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+		{
+			ReadOnlySpan<char> span = new char[] {'a'};
+			ReadOnlySpan<char> span2 = new char[] {'b'};
+			AssertM.StartsWith(span, span2, StringComparison.InvariantCultureIgnoreCase, "Message");
+		});
+	}
+
+	[Fact]
 	public void StrictEqualUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
@@ -911,14 +2092,14 @@ public class AssertMessageAsserts
 	public void SubsetUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Subset(new HashSet<string> { "A" }, new HashSet<string> { "B" }, "Message"));
+			AssertM.Subset(new HashSet<string> {"A"}, new HashSet<string> {"B"}, "Message"));
 	}
 
 	[Fact]
 	public void SupersetUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.Superset(new HashSet<string> { "A" }, new HashSet<string> { "B" }, "Message"));
+			AssertM.Superset(new HashSet<string> {"A"}, new HashSet<string> {"B"}, "Message"));
 	}
 
 	[Fact]
