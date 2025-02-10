@@ -16,6 +16,8 @@
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<PackageReleaseNotes>
+			v.1.1.0
+			- Updated to xUnit.v3 1.1.0
 			v.1.0.1
 			- First release for xUnit.v3 1.0.1
 		</PackageReleaseNotes>
@@ -28,7 +30,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="xunit.v3.assert" Version="[1.0.1, 1.1.0)" />
+		<PackageReference Include="xunit.v3.assert" Version="[1.1.0, 1.2.0)" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\xUnitMessages.Generation\xUnitMessages.Generation.csproj" OutputItemType="Analyzer"
