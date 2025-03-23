@@ -1613,8 +1613,9 @@ public class AssertMessageAsserts
 	[Fact]
 	public void NotEqualUsesMessage2()
 	{
+		object obj1 = new();
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
-			AssertM.NotEqual([], [], StringComparer.OrdinalIgnoreCase, "Message"));
+			AssertM.NotEqual<object>(new object[]{obj1}, new object[]{obj1}, "Message"));
 	}
 
 	[Fact]

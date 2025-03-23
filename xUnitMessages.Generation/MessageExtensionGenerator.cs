@@ -8,7 +8,9 @@ using Microsoft.CodeAnalysis.Text;
 #pragma warning disable RS1035 // Do not use banned APIs for analyzers
 
 [Generator]
+#pragma warning disable RS1042
 public class MessageExtensionGenerator : ISourceGenerator
+#pragma warning restore RS1042
 {
 	private static readonly DiagnosticDescriptor generationWarning = new(
 		id: "XUNITMGEN001",
