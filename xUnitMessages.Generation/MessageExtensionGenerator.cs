@@ -103,7 +103,11 @@ public static partial class AssertM
 
 	private static bool HasNoMessage(IMethodSymbol member)
 	{
-		return member.Name != "False" && member.Name != "True" && member.Name != "Fail";
+		return member.Name != "False" &&
+		       member.Name != "True" && 
+		       member.Name != "Fail" &&
+		       member.Name != "SkipUnless" &&
+		       member.Name != "SkipWhen";
 	}
 
 	private static bool IsReturnable(IMethodSymbol member)
