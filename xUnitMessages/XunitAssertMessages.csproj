@@ -7,7 +7,7 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>Christoph Hornung</Authors>
 		<PackageId>Xunit.v3.AssertMessages</PackageId>
-		<Version>2.0.3</Version>
+		<Version>3.0.0</Version>
 		<Copyright>Christoph Hornung</Copyright>
 		<Description>Adds Assert overloads to add custom messages to assert failures.</Description>
 		<PackageProjectUrl>https://github.com/ChristophHornung/xunitmessages</PackageProjectUrl>
@@ -16,6 +16,8 @@
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<PackageReleaseNotes>
+			v.3.0.0
+			- Updated to xUnit.v3 3.0.0
 			v.2.0.3
 			- Updated to xUnit.v3 2.0.3
 			v.2.0.2
@@ -38,7 +40,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="xunit.v3.assert" Version="[2.0.3, 2.1.0)" />
+		<PackageReference Include="xunit.v3.assert" Version="[3.0.0, 3.1.0)" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\xUnitMessages.Generation\xUnitMessages.Generation.csproj" OutputItemType="Analyzer"

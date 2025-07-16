@@ -2221,6 +2221,13 @@ public partial class AssertMessageAsserts
 	}
 
 	[Fact]
+	public async Task ThrowsAnyAsyncUsesMessage2()
+	{
+		await AssertMessageAsserts.AssertWrapsCorrectly(async () =>
+			await AssertM.ThrowsAnyAsync<Exception>(() => Task.CompletedTask, _ => "A", "Message"));
+	}
+
+	[Fact]
 	public void ThrowsAnyUsesMessage()
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
@@ -2232,6 +2239,20 @@ public partial class AssertMessageAsserts
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
 			AssertM.ThrowsAny<Exception>(() => "A", "Message"));
+	}
+
+	[Fact]
+	public void ThrowsAnyUsesMessage3()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.ThrowsAny<Exception>(() => "A", _ => "A", "Message"));
+	}
+
+	[Fact]
+	public void ThrowsAnyUsesMessage4()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.ThrowsAny<Exception>(() => { }, _ => "A", "Message"));
 	}
 
 	[Fact]
@@ -2253,6 +2274,20 @@ public partial class AssertMessageAsserts
 	{
 		await AssertMessageAsserts.AssertWrapsCorrectly(async () =>
 			await AssertM.ThrowsAsync<ArgumentException>("A", () => Task.CompletedTask, "Message"));
+	}
+
+	[Fact]
+	public async Task ThrowsAsyncUsesMessage4()
+	{
+		await AssertMessageAsserts.AssertWrapsCorrectly(async () =>
+			await AssertM.ThrowsAsync<ArgumentException>(() => Task.CompletedTask, _ => "A", "Message"));
+	}
+
+	[Fact]
+	public async Task ThrowsAsyncUsesMessage5()
+	{
+		await AssertMessageAsserts.AssertWrapsCorrectly(async () =>
+			await AssertM.ThrowsAsync(typeof(ArgumentException), () => Task.CompletedTask, _ => "A", "Message"));
 	}
 
 	[Fact]
@@ -2295,6 +2330,34 @@ public partial class AssertMessageAsserts
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
 			AssertM.Throws<ArgumentException>("A", () => "A", "Message"));
+	}
+
+	[Fact]
+	public void ThrowsUsesMessage8()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Throws(typeof(ArgumentException), () => { },_ => "A", "Message"));
+	}
+
+	[Fact]
+	public void ThrowsUsesMessage9()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Throws(typeof(ArgumentException), () => "A", _ => "A", "Message"));
+	}
+
+	[Fact]
+	public void ThrowsUsesMessage10()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Throws<ArgumentException>(() => { }, _ => "A", "Message"));
+	}
+
+	[Fact]
+	public void ThrowsUsesMessage11()
+	{
+		AssertMessageAsserts.AssertWrapsCorrectly(() =>
+			AssertM.Throws<ArgumentException>(() => "A", _ => "A", "Message"));
 	}
 
 	[Fact]
