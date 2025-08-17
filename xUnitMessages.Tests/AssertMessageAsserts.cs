@@ -4,8 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
-using System.ComponentModel;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Xunit;
@@ -1719,6 +1717,13 @@ public partial class AssertMessageAsserts
 	}
 
 	[Fact]
+	public unsafe void NotNullUsesMessage3()
+	{
+		object* ptr = null;
+		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.NotNull(ptr, "Message"));
+	}
+
+	[Fact]
 	public async Task NotRaisedAnyAsyncUsesMessage1()
 	{
 		TestRaiser raiser = new();
@@ -1846,6 +1851,14 @@ public partial class AssertMessageAsserts
 	{
 		AssertMessageAsserts.AssertWrapsCorrectly(() =>
 			AssertM.Null((int?)3, "Message"));
+	}
+
+	[Fact]
+	public unsafe void NullUsesMessage3()
+	{
+		object o = new();
+		object* ptr = &o;
+		AssertMessageAsserts.AssertWrapsCorrectly(() => AssertM.Null(ptr, "Message"));
 	}
 
 	[Fact]

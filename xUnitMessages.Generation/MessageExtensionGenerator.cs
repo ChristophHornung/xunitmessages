@@ -1,8 +1,10 @@
 ﻿namespace XunitMessages.Generation;
 
+using System.Diagnostics;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 #pragma warning disable RS1035 // Do not use banned APIs for analyzers
@@ -57,8 +59,8 @@ public static partial class AssertM
 			INamedTypeSymbol assertType = xUnitNamespace.GetTypeMembers().Single(m => m.Name == "Assert");
 
 			foreach (IMethodSymbol? member in assertType.GetMembers()
-				         .OfType<IMethodSymbol>()
-				         .Where(MessageExtensionGenerator.IsMethodToExtend))
+						 .OfType<IMethodSymbol>()
+						 .Where(MessageExtensionGenerator.IsMethodToExtend))
 			{
 				this.BuildOverload(context, sourceBuilder, member);
 			}
@@ -81,12 +83,12 @@ public static partial class AssertM
 	private static bool IsMethodToExtend(IMethodSymbol m)
 	{
 		return m.CanBeReferencedByName &&
-		       m.IsDefinition &&
-		       m.DeclaredAccessibility == Accessibility.Public &&
-		       m.Name != "Equals" &&
-		       m.Name != "ReferenceEquals" &&
-		       m.GetAttributes()
-			       .All(a => a.AttributeClass?.Name.Contains("ObsoleteAttribute") != true);
+			   m.IsDefinition &&
+			   m.DeclaredAccessibility == Accessibility.Public &&
+			   m.Name != "Equals" &&
+			   m.Name != "ReferenceEquals" &&
+			   m.GetAttributes()
+				   .All(a => a.AttributeClass?.Name.Contains("ObsoleteAttribute") != true);
 	}
 
 	private static bool IsUnoverloadedStringEqual(IMethodSymbol methodSymbol)
@@ -95,7 +97,7 @@ public static partial class AssertM
 		if (methodSymbol is { Name: "Equal", Parameters.Length: 2 })
 		{
 			return methodSymbol.Parameters[0].Type.ToDisplayString() == "string?" &&
-			       methodSymbol.Parameters[1].Type.ToDisplayString() == "string?";
+				   methodSymbol.Parameters[1].Type.ToDisplayString() == "string?";
 		}
 
 		return false;
@@ -104,10 +106,10 @@ public static partial class AssertM
 	private static bool HasNoMessage(IMethodSymbol member)
 	{
 		return member.Name != "False" &&
-		       member.Name != "True" && 
-		       member.Name != "Fail" &&
-		       member.Name != "SkipUnless" &&
-		       member.Name != "SkipWhen";
+			   member.Name != "True" &&
+			   member.Name != "Fail" &&
+			   member.Name != "SkipUnless" &&
+			   member.Name != "SkipWhen";
 	}
 
 	private static bool IsReturnable(IMethodSymbol member)
@@ -158,7 +160,7 @@ public static partial class AssertM
 		StringBuilder methodSignatureBuilder = new();
 		this.BuildOverloadDocumentation(context, methodSignatureBuilder, member);
 		methodSignatureBuilder.Append(
-			$"\tpublic static{(this.IsTask(member.ReturnType) ? " async " : " ")}{member.ReturnType.ToDisplayString()} {member.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}(");
+			$"\tpublic {(this.IsUnsafe(member) ? " unsafe" : "")} static{(this.IsTask(member.ReturnType) ? " async " : " ")}{member.ReturnType.ToDisplayString()} {member.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}(");
 		bool first = true;
 		foreach (IParameterSymbol parameter in member.Parameters)
 		{
@@ -235,8 +237,8 @@ public static partial class AssertM
 		methodSignatureBuilder.Append(")");
 
 		if (member.TypeParameters.Any(t => t.ConstraintTypes.Any()) ||
-		    member.TypeParameters.Any(t => t.HasValueTypeConstraint) ||
-		    member.TypeParameters.Any(t => t.HasNotNullConstraint))
+			member.TypeParameters.Any(t => t.HasValueTypeConstraint) ||
+			member.TypeParameters.Any(t => t.HasNotNullConstraint))
 		{
 			methodSignatureBuilder.Append(" where ");
 		}
@@ -244,9 +246,9 @@ public static partial class AssertM
 
 		foreach (ITypeParameterSymbol? typeParameter in member.TypeParameters)
 		{
-			if (typeParameter.ConstraintTypes.Any() || 
-			    typeParameter.HasValueTypeConstraint ||
-			    typeParameter.HasNotNullConstraint)
+			if (typeParameter.ConstraintTypes.Any() ||
+				typeParameter.HasValueTypeConstraint ||
+				typeParameter.HasNotNullConstraint)
 			{
 				first = true;
 				methodSignatureBuilder.Append(typeParameter.ToDisplayString());
@@ -323,6 +325,12 @@ public static partial class AssertM
 		sourceBuilder.AppendLine();
 		sourceBuilder.AppendLine("#pragma warning restore CS8777");
 		sourceBuilder.AppendLine();
+	}
+
+	private bool IsUnsafe(IMethodSymbol member)
+	{
+		return member.ReturnType is IPointerTypeSymbol
+		       || member.Parameters.Any(p => p.Type is IPointerTypeSymbol or IFunctionPointerTypeSymbol);
 	}
 
 	private bool CanCopyAttribute(AttributeData arg)
