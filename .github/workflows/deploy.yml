@@ -13,13 +13,15 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 9.0.x
+        dotnet-version: |
+          9.0.x
+          10.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore --configuration Release
     - name: Test
-      run: dotnet test --no-build --verbosity normal --configuration Release --filter FullyQualifiedName!~Example
+      run: dotnet test --no-build --verbosity normal --configuration Release --project xUnitMessages.Tests/xUnitMessages.Tests.csproj
     - name: Archive nuget-package artifact
       uses: actions/upload-artifact@v4
       with:
