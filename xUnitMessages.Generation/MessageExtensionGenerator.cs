@@ -84,8 +84,8 @@ public static partial class AssertM
 			   m.IsDefinition &&
 			   m.DeclaredAccessibility == Accessibility.Public &&
 			   m.Name != "Equals" &&
-			   !m.Name.StartsWith("Override") &&
 			   m.Name != "ReferenceEquals" &&
+			   !m.Name.StartsWith("Override") &&
 			   m.GetAttributes()
 				   .All(a => a.AttributeClass?.Name.Contains("ObsoleteAttribute") != true);
 	}
@@ -107,6 +107,7 @@ public static partial class AssertM
 		return member.Name != "False" &&
 			   member.Name != "True" &&
 			   member.Name != "Fail" &&
+			   member.Name != "Skip" &&
 			   member.Name != "SkipUnless" &&
 			   member.Name != "SkipWhen";
 	}
@@ -431,7 +432,7 @@ public static partial class AssertM
 
 	private string? GetDefaultValue(IParameterSymbol symbol)
 	{
-		if (symbol.HasExplicitDefaultValue == false)
+		if (!symbol.HasExplicitDefaultValue)
 		{
 			return null;
 		}
@@ -443,7 +444,7 @@ public static partial class AssertM
 
 		if (symbol.ExplicitDefaultValue is string stringValue)
 		{
-			return $"\"{stringValue.Replace("\\", "\\\\").Replace("\"", "\\\"")}\"";
+			return $"\"{stringValue.Replace(@"\", @"\\").Replace(@"""", @"\""")}\"";
 		}
 
 		if (symbol.ExplicitDefaultValue is bool value)
