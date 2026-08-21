@@ -8,14 +8,21 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>Christoph Hornung</Authors>
 		<PackageId>Xunit.v3.AssertMessages</PackageId>
+		<Title>xUnit.net v3 Assert Messages</Title>
 		<Version>4.0.0</Version>
 		<Copyright>Christoph Hornung</Copyright>
 		<Description>Adds Assert overloads to add custom messages to assert failures.</Description>
+		<PackageTags>xunit;xunit-v3;assert;assertions;unit-testing;testing;source-generator</PackageTags>
 		<PackageProjectUrl>https://github.com/ChristophHornung/xunitmessages</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/ChristophHornung/xunitmessages</RepositoryUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
 		<PackageReleaseNotes>
 			v.4.0.0
 			- Updated to xUnit.v3 4.0.0
