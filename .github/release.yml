@@ -1,0 +1,22 @@
+changelog:
+  exclude:
+    labels:
+      # Workflow plumbing is not interesting to package consumers.
+      - github_actions
+  categories:
+    - title: Fixes
+      labels:
+        - bug
+    - title: New features
+      labels:
+        - enhancement
+    - title: Dependencies
+      labels:
+        - dependencies
+        - .NET
+    - title: Documentation
+      labels:
+        - documentation
+    - title: Other changes
+      labels:
+        - "*"
