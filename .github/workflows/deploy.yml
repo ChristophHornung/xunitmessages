@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
+      contents: write
       id-token: write
 
     steps:
@@ -33,6 +33,25 @@ jobs:
         path: |
           ${{ github.workspace }}/xUnitMessages/bin/Release/*.nupkg
           ${{ github.workspace }}/xUnitMessages/bin/Release/*.snupkg
+    - name: Resolve package version
+      id: pkg
+      run: |
+        set -euo pipefail
+        nupkg=$(ls "${{ github.workspace }}"/xUnitMessages/bin/Release/Xunit.v3.AssertMessages.*.nupkg)
+        version=$(basename "$nupkg" .nupkg)
+        version=${version#Xunit.v3.AssertMessages.}
+        echo "version=$version" >> "$GITHUB_OUTPUT"
+        echo "Resolved package version $version"
+    - name: Verify the version is not already published
+      run: |
+        set -euo pipefail
+        version='${{ steps.pkg.outputs.version }}'
+        if curl -sf https://api.nuget.org/v3-flatcontainer/xunit.v3.assertmessages/index.json \
+             | jq -e --arg v "$version" '.versions | index($v)' > /dev/null; then
+          echo "::error::$version is already on nuget.org - nothing would be published, so no tag is created."
+          exit 1
+        fi
+        echo "$version has not been published yet"
     - name: NuGet login
       uses: NuGet/login@v1
       id: login
@@ -40,3 +59,14 @@ jobs:
         user: ${{ secrets.NUGET_USER }}
     - name: Push to NuGet
       run: dotnet nuget push ${{ github.workspace }}/xUnitMessages/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
+
+    - name: Tag the release
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        set -euo pipefail
+        version='${{ steps.pkg.outputs.version }}'
+        gh release create "v$version" \
+          --target "${{ github.sha }}" \
+          --title "v$version" \
+          --generate-notes
