@@ -30,7 +30,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: nuget-package
-        path: ${{ github.workspace }}/xUnitMessages/bin/Release/*.nupkg
+        path: |
+          ${{ github.workspace }}/xUnitMessages/bin/Release/*.nupkg
+          ${{ github.workspace }}/xUnitMessages/bin/Release/*.snupkg
     - name: NuGet login
       uses: NuGet/login@v1
       id: login
