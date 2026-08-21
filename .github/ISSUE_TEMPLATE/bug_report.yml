@@ -1,0 +1,93 @@
+name: 🐞 Bug report
+description: Report a problem with Xunit.v3.AssertMessages
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. A few details up front usually save a round trip.
+
+        Worth checking before filing:
+
+          * Are you on the [latest version](https://www.nuget.org/packages/Xunit.v3.AssertMessages/)?
+          * Does the same thing happen with a plain `Xunit.Assert` call? If so it probably belongs upstream in [xunit](https://github.com/xunit/xunit).
+
+  - type: input
+    id: package-version
+    attributes:
+      label: Xunit.v3.AssertMessages version
+      placeholder: "4.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: xunit-version
+    attributes:
+      label: xunit.v3 version
+      placeholder: "4.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: target-framework
+    attributes:
+      label: Target framework
+      placeholder: "net9.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where does it happen?
+      multiple: true
+      options:
+        - Running tests
+        - Building (dotnet build or CI)
+        - Visual Studio
+        - Rider
+        - ReSharper
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear description of what went wrong.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: The smallest assertion that shows the problem. Please paste text rather than screenshots so it can be copied and searched.
+      value: |
+        ```csharp
+        using Assert = XunitAssertMessages.AssertM;
+
+        [Fact]
+        public void Repro()
+        {
+            Assert.Equal(10, 9, "This is so wrong.");
+        }
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected message
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual message or error
+      description: The full assertion output or build error.
+    validations:
+      required: true
