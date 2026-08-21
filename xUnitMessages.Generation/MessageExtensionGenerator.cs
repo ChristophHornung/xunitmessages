@@ -1,10 +1,8 @@
 ﻿namespace XunitMessages.Generation;
 
-using System.Diagnostics;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 #pragma warning disable RS1035 // Do not use banned APIs for analyzers
@@ -86,6 +84,7 @@ public static partial class AssertM
 			   m.IsDefinition &&
 			   m.DeclaredAccessibility == Accessibility.Public &&
 			   m.Name != "Equals" &&
+			   !m.Name.StartsWith("Override") &&
 			   m.Name != "ReferenceEquals" &&
 			   m.GetAttributes()
 				   .All(a => a.AttributeClass?.Name.Contains("ObsoleteAttribute") != true);
