@@ -11,7 +11,6 @@ body:
 
           * Are you on the [latest version](https://www.nuget.org/packages/Xunit.v3.AssertMessages/)?
           * Does the same thing happen with a plain `Xunit.Assert` call? If so it probably belongs upstream in [xunit](https://github.com/xunit/xunit).
-          * If `AssertM` members do not resolve in your editor but `dotnet build` succeeds, clear your IDE caches first — the overloads come from a source generator and stale caches look exactly like a missing package.
 
   - type: input
     id: package-version
